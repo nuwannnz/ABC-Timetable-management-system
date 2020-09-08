@@ -1,0 +1,7 @@
+{
+  "type": "sqlite",
+  "database": "./TimeTable.sqlite",
+  "synchronize": true,
+  "logging": false,
+  "entities": ["./entity/**/*.ts"]
+}

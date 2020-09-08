@@ -4,25 +4,30 @@ import { Switch, Route } from 'react-router-dom';
 import routes from './constants/routes.json';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
+import SideBarContainer from './containers/SideBarContainer';
+import ContentWrapper from './containers/ContentWrapper';
+import Lecture from './containers/Lecture';
 
 // Lazily load routes and code split with webpack
-const LazyCounterPage = React.lazy(() =>
-  import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
-);
+// const LazyCounterPage = React.lazy(() =>
+//   import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
+// );
 
-const CounterPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
-    <LazyCounterPage {...props} />
-  </React.Suspense>
-);
+// const CounterPage = (props: Record<string, any>) => (
+//   <React.Suspense fallback={<h1>Loading...</h1>}>
+//     <LazyCounterPage {...props} />
+//   </React.Suspense>
+// );
 
 export default function Routes() {
   return (
     <App>
-      <Switch>
-        <Route path={routes.COUNTER} component={CounterPage} />
-        <Route path={routes.HOME} component={HomePage} />
-      </Switch>
+      <SideBarContainer />
+      <ContentWrapper>
+        <Switch>
+          <Route path={routes.LECTURE} component={Lecture} />
+        </Switch>
+      </ContentWrapper>
     </App>
   );
 }
