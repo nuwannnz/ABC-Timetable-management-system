@@ -13,7 +13,10 @@ export default function App(props: Props) {
   useEffect(() => {
     connectToDb();
     const con = getConnection();
-    con.sync({ force: true });
+    const sync = async () => {
+      await con.sync({ force: true });
+    };
+    sync();
   }, []);
   return <div className="app">{children}</div>;
 }

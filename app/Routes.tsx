@@ -7,6 +7,7 @@ import HomePage from './containers/HomePage';
 import SideBarContainer from './containers/SideBarContainer';
 import ContentWrapper from './containers/ContentWrapper';
 import Lecture from './containers/Lecture';
+import SubjectPage from './containers/SubjectPage';
 
 // Lazily load routes and code split with webpack
 // const LazyCounterPage = React.lazy(() =>
@@ -26,6 +27,7 @@ export default function Routes() {
       <ContentWrapper>
         <Switch>
           <Route path={routes.LECTURE} component={Lecture} />
+          <Route path={routes.SUBJECT} component={SubjectPage} />
         </Switch>
       </ContentWrapper>
     </App>
