@@ -1,31 +1,34 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { getConnection } from '../utils/db';
-import Room from './Room';
-import Lecture from './Lecture';
 
 const sequelize = getConnection();
 
 // eslint-disable-next-line import/prefer-default-export
-class Building extends Model {}
+class Lecture extends Model {}
 
-Building.init(
+Lecture.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
     },
-    name: {
+    fName: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    level: {
+      type: DataTypes.NUMBER,
       allowNull: false,
     },
   },
   {
     sequelize,
-    modelName: 'Building',
+    modelName: 'Lecture',
   }
 );
 
-Building.hasMany(Room);
-Building.hasMany(Lecture);
-
-export default Building;
+export default Lecture;
