@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useState, useEffect } from 'react';
-import { connectToDb, db, getConnection } from '../utils/db';
+import { connectToDb, getConnection } from '../utils/db';
 import Subject from '../entity/Subject';
 import Building from '../entity/Building';
 import Room from '../entity/Room';
@@ -13,7 +13,7 @@ export default function App(props: Props) {
   useEffect(() => {
     connectToDb();
     const con = getConnection();
-    con.sync({ force: true });
+    // con.sync({ force: true });
   }, []);
   return <div className="app">{children}</div>;
 }
