@@ -1,0 +1,59 @@
+.addBuildingWrap {
+  margin-top: 25px;
+}
+
+.bInputValue {
+  font-size: 15px;
+  margin-bottom: 0px;
+  padding-left: 10px;
+}
+
+.bCardWrap {
+  width: 265px;
+  height: 100px;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  border-radius: 5px;
+  background-color: gainsboro;
+  color: black;
+}
+
+.rCardWrap {
+  width: 265px;
+  height: 115px;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  border-radius: 5px;
+  background-color: gainsboro;
+  color: black;
+}
+
+.floatRightBtn {
+  float: right;
+}
+
+.bCardBtn {
+  float: right;
+  margin-top: 15px;
+}
+
+.bCardWrap p:first-child {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 0px;
+}
+
+.rCardWrap p:first-child {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 0px;
+}
+
+.rCardBtn {
+  float: right;
+  margin-top: 10px;
+}
