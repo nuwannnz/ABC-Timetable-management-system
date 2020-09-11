@@ -3,7 +3,7 @@
   "COUNTER": "/counter",
   "LECTURE": "/lecture",
   "SUBJECT": "/subject",
-  "BUILDINGS": "/building",
+  "LOCATION": "/location",
   "WORKING_DAYS": "/workingday",
   "STUDENT_BATCHES": "/student",
   "STATISTICS": "/statistic",
