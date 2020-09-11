@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-curly-newline */
+/* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable no-alert */
 /* eslint-disable consistent-return */
 /* eslint-disable prettier/prettier */
@@ -9,20 +11,22 @@ import Subject from '../../entity/Subject';
 type SubjectDialogProps = {
   closeClickHandler: () => void;
   show: boolean;
+  // eslint-disable-next-line react/require-default-props
   subject?: Subject | null;
-  onSubmit:(subject:any)=>void;
+  onSubmit: (subject: any) => void;
 };
 
 export default function SubjectDialog({
   closeClickHandler,
   show,
   subject,
-  onSubmit
+  onSubmit,
 }: SubjectDialogProps) {
-
-  const [code, setCode] = useState(subject ? (subject as any).code :"")
+  const [code, setCode] = useState(subject ? (subject as any).code : '');
   const [name, setName] = useState(subject ? (subject as any).name : '');
-  const [lectureHours, setLectureHours] = useState(subject ? (subject as any).lectureHours :0)
+  const [lectureHours, setLectureHours] = useState(
+    subject ? (subject as any).lectureHours : 0
+  );
   const [tutorialHours, setTutorialHours] = useState(
     subject ? (subject as any).tutorialHours : 0
   );
@@ -30,46 +34,41 @@ export default function SubjectDialog({
     subject ? (subject as any).labHours : 0
   );
   const [evaluationHours, setEvaluationHours] = useState(
-    subject ? (subject as any).evaluationHours :0
-    );
+    subject ? (subject as any).evaluationHours : 0
+  );
 
-    const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const validate = ():boolean =>{
+  const validate = (): boolean => {
     let isValid = true;
-    if(name.length === 0 || code.length === 0 ){
+    if (name.length === 0 || code.length === 0) {
       isValid = false;
     }
     return isValid;
-  }
+  };
 
-  const saveBtnClickHandler = () =>{
-    if(!validate()){
+  const saveBtnClickHandler = () => {
+    if (!validate()) {
       setErrorMsg('Subject code and subject name are required');
       return;
     }
 
-      const subjectDao = {
-        id: subject ? subject.id : null,
-        code,
-        name,
-        lectureHours,
-        tutorialHours,
-        labHours,
-        evaluationHours
-      }
-      onSubmit(subjectDao)
-
-  }
+    const subjectDao = {
+      id: subject ? subject.id : null,
+      code,
+      name,
+      lectureHours,
+      tutorialHours,
+      labHours,
+      evaluationHours,
+    };
+    onSubmit(subjectDao);
+  };
 
   return (
     <Modal show={show} size="lg" onHide={() => closeClickHandler()} centered>
       <Modal.Header closeButton>
-        <Modal.Title>
-          {subject ? 'Update' : 'Add'}
-          {' '}
-          subject
-        </Modal.Title>
+        <Modal.Title>{subject ? 'Update' : 'Add'} subject</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -104,7 +103,8 @@ export default function SubjectDialog({
                 <Form.Label>Lecture Hours</Form.Label>
                 <Form.Control
                   onChange={(e) =>
-                    setLectureHours(parseInt(e.target.value, 10))}
+                    setLectureHours(parseInt(e.target.value, 10))
+                  }
                   value={lectureHours}
                   type="number"
                   placeholder="Enter lecture hours here"
@@ -116,7 +116,8 @@ export default function SubjectDialog({
                 <Form.Label>Tutorial hours</Form.Label>
                 <Form.Control
                   onChange={(e) =>
-                    setTutorialHours(parseInt(e.target.value, 10))}
+                    setTutorialHours(parseInt(e.target.value, 10))
+                  }
                   value={tutorialHours}
                   type="number"
                   placeholder="Enter tutorial hours here"
@@ -141,7 +142,8 @@ export default function SubjectDialog({
                 <Form.Label>Evaluation Hours</Form.Label>
                 <Form.Control
                   onChange={(e) =>
-                    setEvaluationHours(parseInt(e.target.value, 10))}
+                    setEvaluationHours(parseInt(e.target.value, 10))
+                  }
                   value={evaluationHours}
                   type="number"
                   placeholder="Enter evaluation hours here"
@@ -159,7 +161,9 @@ export default function SubjectDialog({
         <Button variant="secondary" onClick={closeClickHandler}>
           Close
         </Button>
-        <Button variant="primary" onClick={() => saveBtnClickHandler()}>{subject ? 'Save': 'create' }</Button>
+        <Button variant="primary" onClick={() => saveBtnClickHandler()}>
+          {subject ? 'Save' : 'create'}
+        </Button>
       </Modal.Footer>
     </Modal>
   );

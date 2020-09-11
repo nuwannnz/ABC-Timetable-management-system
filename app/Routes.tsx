@@ -6,7 +6,7 @@ import App from './containers/App';
 import HomePage from './containers/HomePage';
 import SideBarContainer from './containers/SideBarContainer';
 import ContentWrapper from './containers/ContentWrapper';
-import Lecture from './containers/Lecture';
+import LecturePage from './containers/LecturePage';
 import SubjectPage from './containers/SubjectPage';
 
 // Lazily load routes and code split with webpack
@@ -26,7 +26,7 @@ export default function Routes() {
       <SideBarContainer />
       <ContentWrapper>
         <Switch>
-          <Route path={routes.LECTURE} component={Lecture} />
+          <Route path={routes.LECTURE} component={LecturePage} />
           <Route path={routes.SUBJECT} component={SubjectPage} />
         </Switch>
       </ContentWrapper>

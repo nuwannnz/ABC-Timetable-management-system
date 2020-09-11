@@ -25,7 +25,7 @@ export default function App(props: Props) {
     const sync = async () => {
       await con.sync({ force: true });
     };
-    sync();
+    // sync();
   }, []);
   return <div className="app">{children}</div>;
 }
