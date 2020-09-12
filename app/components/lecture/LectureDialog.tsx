@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { useState, useEffect } from 'react';
-import { Modal, Row, Col, Form, Button } from 'react-bootstrap';
+import { Modal, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import Lecture from '../../entity/Lecture';
 import Faculty from '../../entity/Faculty';
 import Department from '../../entity/Department';
@@ -25,37 +25,26 @@ function LectureDialog({
   onSubmit,
   lecture,
 }: LectureDialogProps) {
-  const [facultyList, setFacultyList] = useState<Faculty[]>([]);
-  const [departmentList, setDepartmentList] = useState<Department[]>([]);
-  const [centerList, setCenterList] = useState<Center[]>([]);
   const [buildingList, setBuildingList] = useState<Building[]>([]);
 
   const [faculty, setFaculty] = useState(
-    lecture ? (lecture as any).faculty : null
+    lecture ? (lecture as any).Faculty.id : null
   );
   const [department, setDepartment] = useState(
-    lecture ? (lecture as any).department : null
+    lecture ? (lecture as any).Department.id : null
   );
   const [center, setCenter] = useState(
-    lecture ? (lecture as any).center : null
+    lecture ? (lecture as any).Center.id : null
   );
   const [building, setBuilding] = useState(
-    lecture ? (lecture as any).uilding : null
+    lecture ? (lecture as any).Building.id : null
   );
   const [fName, setFName] = useState(lecture ? (lecture as any).fName : '');
   const [lName, setLName] = useState(lecture ? (lecture as any).lName : '');
   const [level, setLevel] = useState(lecture ? (lecture as any).level : -1);
 
+  const [errorMsg, setErrorMsg] = useState('');
   const loadData = () => {
-    Faculty.findAll()
-      .then((result) => setFacultyList(result))
-      .catch(() => console.log('failed to load faculties'));
-    Department.findAll()
-      .then((result) => setDepartmentList(result))
-      .catch(() => console.log('failed to load departments'));
-    Center.findAll()
-      .then((result) => setCenterList(result))
-      .catch(() => console.log('failed to load centers'));
     Building.findAll()
       .then((result) => setBuildingList(result))
       .catch(() => console.log('failed to load buildings'));
@@ -65,7 +54,59 @@ function LectureDialog({
     loadData();
   }, []);
 
-  const saveBtnClickHandler = () => {};
+  const validate = () => {
+    let isValid = true;
+    // console.log({
+    //   fName,
+    //   lName,
+    //   level,
+    //   faculty,
+    //   center,
+    //   department,
+    //   building,
+    // });
+    if (fName.length === 0 || lName.length === 0) {
+      isValid = false;
+    }
+    if (
+      !(faculty as number) ||
+      !(center as number) ||
+      !(department as number) ||
+      !(building as number)
+    ) {
+      isValid = false;
+    }
+    if (
+      faculty === '-1' ||
+      center === '-1' ||
+      department === '-1' ||
+      building === '-1'
+    ) {
+      isValid = false;
+    }
+    return isValid;
+  };
+
+  const saveBtnClickHandler = () => {
+    if (!validate()) {
+      setErrorMsg('All the fields are required !');
+      return;
+    }
+    setErrorMsg('');
+
+    const lec = {
+      id: lecture ? (lecture as any).id : null,
+      fName,
+      lName,
+      level,
+      BuildingId: building,
+      CenterId: center,
+      FacultyId: faculty,
+      DepartmentId: department,
+    };
+    onSubmit(lec);
+  };
+
   return (
     <Modal show={show} size="lg" onHide={() => closeClickHandler()} centered>
       <Modal.Header closeButton>
@@ -108,6 +149,8 @@ function LectureDialog({
                   onChange={(e) => setLevel(e.target.value)}
                   value={level}
                 >
+                  <option value={-1}>Select a level</option>
+
                   {LectureLevels.map((l) => (
                     <option key={l.level} value={l.level}>
                       {l.name}
@@ -117,20 +160,6 @@ function LectureDialog({
               </Form.Group>
             </Col>
             <Col>
-              {/* <Form.Group controlId="faculty">
-                <Form.Label>Faculty</Form.Label>
-                <Form.Control
-                  as="select"
-                  onChange={(e) => setFaculty(e.target.value)}
-                  value={faculty}
-                >
-                  {facultyList.map((f: any) => (
-                    <option key={f.id} value={f.id}>
-                      {f.name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group> */}
               <FacultySelect
                 onFacultySelected={(f) => setFaculty(f)}
                 selectedFacultyId={faculty}
@@ -140,40 +169,12 @@ function LectureDialog({
 
           <Row>
             <Col>
-              {/* <Form.Group controlId="department">
-                <Form.Label>Department</Form.Label>
-                <Form.Control
-                  as="select"
-                  onChange={(e) => setDepartment(e.target.value)}
-                  value={department}
-                >
-                  {departmentList.map((d: any) => (
-                    <option key={d.id} value={d.id}>
-                      {d.name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group> */}
               <DepartmentSelect
                 onDepartmentSelected={(d) => setDepartment(d)}
                 selectedDepartmentId={department}
               />
             </Col>
             <Col>
-              {/* <Form.Group controlId="center">
-                <Form.Label>Center</Form.Label>
-                <Form.Control
-                  as="select"
-                  onChange={(e) => setCenter(e.target.value)}
-                  value={center}
-                >
-                  {centerList.map((c: any) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group> */}
               <CenterSelect
                 onCenterSelected={(c) => setCenter(c)}
                 selectedCenterId={center}
@@ -187,8 +188,10 @@ function LectureDialog({
                 <Form.Control
                   as="select"
                   onChange={(e) => setBuilding(e.target.value)}
-                  value={center}
+                  value={building}
                 >
+                  <option value={-1}>Select a building</option>
+
                   {buildingList.map((b: any) => (
                     <option key={b.id} value={b.id}>
                       {b.name}
@@ -198,6 +201,13 @@ function LectureDialog({
               </Form.Group>
             </Col>
             <Col />
+          </Row>
+          <Row>
+            <Col>
+              {errorMsg.length > 0 && (
+                <Alert variant="danger">{errorMsg}</Alert>
+              )}
+            </Col>
           </Row>
         </>
       </Modal.Body>

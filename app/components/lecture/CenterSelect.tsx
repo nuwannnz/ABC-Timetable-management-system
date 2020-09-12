@@ -26,8 +26,8 @@ export default function CenterSelect({
   }, []);
 
   useEffect(() => {
-    onCenterSelected(selectedCenterId as number);
-  }, [selectedCenterId]);
+    onCenterSelected(selectedCenter as number);
+  }, [selectedCenter]);
 
   const addNewCenterClickHandler = () => {
     Center.create({ name: newCenterText })
@@ -48,6 +48,8 @@ export default function CenterSelect({
           onChange={(e) => setSelectedCenter(parseInt(e.target.value, 10))}
           value={selectedCenter}
         >
+          <option value={-1}>Select a center</option>
+
           {CenterList.map((f: any) => (
             <option key={f.id} value={f.id}>
               {f.name}

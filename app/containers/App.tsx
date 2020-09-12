@@ -3,10 +3,10 @@ import { connectToDb, getConnection } from '../utils/db';
 import Subject from '../entity/Subject';
 import Building from '../entity/Building';
 import Room from '../entity/Room';
-import Lecture from '../entity/Lecture';
 import Faculty from '../entity/Faculty';
 import Department from '../entity/Department';
 import Center from '../entity/Center';
+import Lecture from '../entity/Lecture';
 
 type Props = {
   children: ReactNode;
@@ -15,6 +15,16 @@ type Props = {
 export default function App(props: Props) {
   const { children } = props;
   useEffect(() => {
+    Lecture.belongsTo(Faculty);
+    Lecture.belongsTo(Department);
+    Lecture.belongsTo(Center);
+    Lecture.belongsTo(Building);
+
+    Faculty.hasMany(Lecture);
+    Department.hasMany(Lecture);
+    Center.hasMany(Lecture);
+    Building.hasMany(Lecture);
+
     connectToDb();
     const con = getConnection();
     Faculty.findAll();

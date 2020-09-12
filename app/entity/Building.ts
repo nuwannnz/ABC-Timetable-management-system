@@ -1,7 +1,6 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { getConnection } from '../utils/db';
 import Room from './Room';
-import Lecture from './Lecture';
 
 const sequelize = getConnection();
 
@@ -26,6 +25,6 @@ Building.init(
 );
 
 Building.hasMany(Room);
-Building.hasMany(Lecture);
+// Building.hasMany(Lecture);
 
 export default Building;

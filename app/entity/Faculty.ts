@@ -25,5 +25,5 @@ Faculty.init(
   }
 );
 
-Faculty.hasMany(Lecture);
+// Faculty.hasMany(Lecture);
 export default Faculty;

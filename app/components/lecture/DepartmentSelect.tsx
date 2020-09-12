@@ -28,8 +28,8 @@ export default function DepartmentSelect({
   }, []);
 
   useEffect(() => {
-    onDepartmentSelected(selectedDepartmentId as number);
-  }, [selectedDepartmentId]);
+    onDepartmentSelected(selectedDepartment as number);
+  }, [selectedDepartment]);
 
   const addNewFacultyClickHandler = () => {
     Department.create({ name: newDepartmentText })
@@ -47,9 +47,13 @@ export default function DepartmentSelect({
         <Form.Label>Department</Form.Label>
         <Form.Control
           as="select"
-          onChange={(e) => setSelectedDepartment(parseInt(e.target.value, 10))}
+          onChange={(e) => {
+            console.log('department-dialog -> ', e.target.value);
+            setSelectedDepartment(parseInt(e.target.value, 10));
+          }}
           value={selectedDepartment}
         >
+          <option value={-1}>Select a department</option>
           {departmentList.map((f: any) => (
             <option key={f.id} value={f.id}>
               {f.name}

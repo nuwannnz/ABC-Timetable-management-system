@@ -1,5 +1,10 @@
+/* eslint-disable import/no-cycle */
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { getConnection } from '../utils/db';
+import Building from './Building';
+import Center from './Center';
+import Department from './Department';
+import Faculty from './Faculty';
 
 const sequelize = getConnection();
 
@@ -31,4 +36,8 @@ Lecture.init(
   }
 );
 
+// Lecture.belongsTo(Faculty);
+// Lecture.belongsTo(Department);
+// Lecture.belongsTo(Center);
+// Lecture.belongsTo(Building);
 export default Lecture;

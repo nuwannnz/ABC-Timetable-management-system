@@ -1,8 +1,14 @@
+/* eslint-disable no-restricted-globals */
 import React, { useState, useEffect } from 'react';
 import { Button, Table } from 'react-bootstrap';
 import Lecture from '../entity/Lecture';
 // eslint-disable-next-line import/no-cycle
 import LectureDialog from '../components/lecture/LectureDialog';
+import Faculty from '../entity/Faculty';
+import Center from '../entity/Center';
+import Department from '../entity/Department';
+import Building from '../entity/Building';
+import { formatLectureId } from '../utils/formatters';
 
 export const LectureLevels = [
   { level: 1, name: 'Professor' },
@@ -16,12 +22,49 @@ export const LectureLevels = [
 
 export default function LecturePage() {
   const [lectureList, setLectureList] = useState<Lecture[]>([]);
+  const [lectureToUpdate, setLecturetoUpdate] = useState<Lecture | null>(null);
   const [displayDialog, setDisplayDialog] = useState(false);
 
   const loadLectures = () => {
-    Lecture.findAll()
-      .then((result) => setLectureList(result))
+    Lecture.findAll({
+      include: [Faculty, Center, Department, Building],
+    })
+      .then((result) => {
+        setLectureList(result);
+        return true;
+      })
       .catch(() => console.log('failed to load lectures'));
+  };
+
+  const handleLectureDialogSubmit = (lec: any) => {
+    if (lec.id) {
+      // update
+      Lecture.update({ ...lec }, { where: { id: lec.id } })
+        .then(() => {
+          setDisplayDialog(false);
+          setLecturetoUpdate(null);
+          loadLectures();
+          return true;
+        })
+        .catch((e) => console.error('failed to update lecture'));
+    } else {
+      // create
+      Lecture.create({ ...lec })
+        .then(() => {
+          setDisplayDialog(false);
+          loadLectures();
+          return true;
+        })
+        .catch((e) => console.error('failed to create lecture'));
+    }
+  };
+
+  const deleteLectureHandler = (id: any) => {
+    if (confirm('Delete this lecture permanantly?')) {
+      Lecture.destroy({ where: { id } })
+        .then(() => loadLectures())
+        .catch(() => console.log('Failed to delete lecture'));
+    }
   };
 
   useEffect(() => {
@@ -40,7 +83,7 @@ export default function LecturePage() {
           Add new lecture
         </Button>
       </div>
-      <Table>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Emp no</th>
@@ -58,21 +101,35 @@ export default function LecturePage() {
         <tbody>
           {lectureList.map((l: any) => (
             <tr key={l.id}>
-              <td>{l.id}</td>
-              <td>{l.rank}</td>
+              <td>{formatLectureId(l.id)}</td>
+              <td>{`${l.level}.${formatLectureId(l.id)}`}</td>
               <td>{l.fName}</td>
               <td>{l.lName}</td>
-              <td>{l.level}</td>
-              <td>{l.faculty}</td>
-              <td>{l.department}</td>
-              <td>{l.center}</td>
-              <td>{l.building}</td>
+              <td>
+                {LectureLevels.find((level) => level.level === l.level)?.name}
+              </td>
+              <td>{l.Faculty.name}</td>
+              <td>{l.Department.name}</td>
+              <td>{l.Center.name}</td>
+              <td>{l.Building.name}</td>
               <td>
                 <div className="d-flex justify-content-center align-items-center">
-                  <Button className="mr-1" variant="info" size="sm">
+                  <Button
+                    className="mr-1"
+                    variant="info"
+                    size="sm"
+                    onClick={() => {
+                      setLecturetoUpdate(l);
+                      setDisplayDialog(true);
+                    }}
+                  >
                     Edit
                   </Button>
-                  <Button variant="danger" size="sm">
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => deleteLectureHandler(l.id)}
+                  >
                     Delete
                   </Button>
                 </div>
@@ -85,7 +142,8 @@ export default function LecturePage() {
         <LectureDialog
           closeClickHandler={() => setDisplayDialog(false)}
           show={displayDialog}
-          onSubmit={() => {}}
+          lecture={lectureToUpdate}
+          onSubmit={handleLectureDialogSubmit}
         />
       )}
     </div>

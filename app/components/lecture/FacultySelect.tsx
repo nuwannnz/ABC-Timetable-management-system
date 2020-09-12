@@ -9,7 +9,7 @@ type FacultySelectPropType = {
 
 export default function FacultySelect({
   onFacultySelected,
-  selectedFacultyId,
+  selectedFacultyId = -1,
 }: FacultySelectPropType) {
   const [facultyList, setFacultyList] = useState<Faculty[]>([]);
   const [selectedFaculty, setSelectedFaculty] = useState(selectedFacultyId);
@@ -26,8 +26,8 @@ export default function FacultySelect({
   }, []);
 
   useEffect(() => {
-    onFacultySelected(selectedFacultyId as number);
-  }, [selectedFacultyId]);
+    onFacultySelected(selectedFaculty as number);
+  }, [selectedFaculty]);
 
   const addNewFacultyClickHandler = () => {
     Faculty.create({ name: newFacultyText })
@@ -48,6 +48,8 @@ export default function FacultySelect({
           onChange={(e) => setSelectedFaculty(parseInt(e.target.value, 10))}
           value={selectedFaculty}
         >
+          <option value={-1}>Select a faculty</option>
+
           {facultyList.map((f: any) => (
             <option key={f.id} value={f.id}>
               {f.name}

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { getConnection } from '../utils/db';
 import Lecture from './Lecture';
@@ -24,5 +25,5 @@ Center.init(
   }
 );
 
-Center.hasMany(Lecture);
+// Center.hasMany(Lecture);
 export default Center;
