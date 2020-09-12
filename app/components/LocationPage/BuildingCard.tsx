@@ -1,6 +1,10 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import styles from './LocationPage.css';
 import Building from '../../entity/Building';
@@ -16,9 +20,24 @@ export default function BuildingCard({
   onEditClick,
 }: BuildingCardType) {
   const context = useContext(LocationPageContext);
+  const [selected, setSelected] = useState(false);
 
+  const onClickCard = () => {
+    context.onSelectBuildingHandler((building as any).id);
+    setSelected(!selected);
+  };
+
+  useEffect(() => {
+    if (context.selectedBuildingId !== (building as any).id) {
+      setSelected(false);
+    }
+  }, [context.selectedBuildingId, building]);
   return (
-    <div className={styles.bCardWrap}>
+    <div
+      className={styles.bCardWrap}
+      style={{ backgroundColor: selected ? '#9E9E9E' : 'gainsboro' }}
+      onClick={() => onClickCard()}
+    >
       <div className="d-flex">
         <p>Building Name: </p>
         <p className={styles.bInputValue}>{(building as any).name}</p>

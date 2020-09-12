@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -8,9 +9,18 @@ import BuildingList from '../components/LocationPage/BuildingList';
 import RoomList from '../components/LocationPage/RoomList';
 import Building from '../entity/Building';
 import EditBuildingForm from '../components/LocationPage/EditBuildingForm';
+import Room from '../entity/Room';
+import EditRoomForm from '../components/LocationPage/EditRoomForm';
+import ToastMsg from '../components/LocationPage/ToastMsg';
 
 export const LocationPageContext = React.createContext({
   onDeleteBuildingHandler: (p: number) => {},
+  onSelectBuildingHandler: (p: number) => {},
+  selectedBuildingId: -1,
+  onEditFormCancelHandler: () => {},
+  onAddRoomHandler: () => {},
+  onEditRoomClickHandler: (r: Room) => {},
+  onDeleteRoomHandler: (r: number) => {},
 });
 
 export default function LocationPage() {
@@ -18,6 +28,11 @@ export default function LocationPage() {
   const [buildingToUpdate, setbuildingToUpdate] = useState<Building | null>(
     null
   );
+  const [roomList, setroomList] = useState<Room[]>([]);
+
+  const [selectedBuilding, setselectedBuilding] = useState<number | null>(null);
+
+  const [roomToUpdate, setroomToUpdate] = useState<Room | null>(null);
 
   const loadBuildings = () => {
     Building.findAll()
@@ -29,8 +44,17 @@ export default function LocationPage() {
     if (confirm('Delete Permanatly?')) {
       Building.destroy({ where: { id: buildingId } })
         .then(() => loadBuildings())
-        .catch(() => alert('Fail to delete'));
+        .catch(() => console.log('Fail to delete!'));
     }
+  };
+
+  const onSelectBuilding = (buildingId: number) => {
+    if (selectedBuilding === buildingId) {
+      setselectedBuilding(null);
+      return;
+    }
+    setselectedBuilding(buildingId);
+    setroomToUpdate(null);
   };
 
   useEffect(() => {
@@ -50,14 +74,57 @@ export default function LocationPage() {
     setbuildingToUpdate(building);
   };
 
+  const onEditFormCancel = () => {
+    setbuildingToUpdate(null);
+    setroomToUpdate(null);
+  };
+
+  const loadRooms = () => {
+    Room.findAll({ where: { buildingId: selectedBuilding } })
+      .then((result) => setroomList([...result]))
+      .catch((e) => console.log(e));
+  };
+
+  useEffect(() => {
+    loadRooms();
+  }, [selectedBuilding]);
+
+  const onAddRoom = () => {
+    loadRooms();
+  };
+
+  const onEditRoomClick = (room: Room) => {
+    setroomToUpdate(room);
+  };
+
+  const onEditRoom = () => {
+    loadRooms();
+    setroomToUpdate(null);
+  };
+
+  const onDeleteRoom = (rooomId: number) => {
+    if (confirm('Delete Permanatly?')) {
+      Room.destroy({ where: { id: rooomId } })
+        .then(() => loadRooms())
+        .catch(() => console.log('Fail to delete!'));
+    }
+  };
+
   return (
     <LocationPageContext.Provider
       value={{
         onDeleteBuildingHandler: onDeleteBuilding,
+        onSelectBuildingHandler: onSelectBuilding,
+        selectedBuildingId: selectedBuilding as any,
+        onEditFormCancelHandler: onEditFormCancel,
+        onAddRoomHandler: onAddRoom,
+        onEditRoomClickHandler: onEditRoomClick,
+        onDeleteRoomHandler: onDeleteRoom,
       }}
     >
       <div>
         <h2>Location</h2>
+
         <div className="d-flex justify-content-between flex-column">
           <div className="d-flex justify-content-between">
             {buildingToUpdate ? (
@@ -69,14 +136,19 @@ export default function LocationPage() {
               <AddBuildingForm onAddBuilding={onAddBuilding} />
             )}
 
-            <AddRoomForm />
+            {/* {selectedBuilding && <AddRoomForm />} */}
+            {roomToUpdate ? (
+              <EditRoomForm room={roomToUpdate} onRoomUpdate={onEditRoom} />
+            ) : selectedBuilding ? (
+              <AddRoomForm />
+            ) : null}
           </div>
           <div className="d-flex justify-content-between">
             <BuildingList
               buildingList={buildingList}
               onBuildingEdit={onEditClick}
             />
-            <RoomList />
+            {selectedBuilding && <RoomList roomList={roomList} />}
           </div>
         </div>
       </div>

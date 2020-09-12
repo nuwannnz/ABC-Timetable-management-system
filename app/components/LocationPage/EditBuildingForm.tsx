@@ -1,10 +1,12 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable promise/always-return */
 /* eslint-disable no-alert */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 import styles from './LocationPage.css';
 import Building from '../../entity/Building';
+import { LocationPageContext } from '../../containers/LocationPage';
 
 type EditBuildingFormType = {
   building: Building;
@@ -16,6 +18,7 @@ export default function EditBuildingForm({
   onBuildingUpdate,
 }: EditBuildingFormType) {
   const [name, setname] = useState((building as any).name);
+  const context = useContext(LocationPageContext);
 
   const updateClickHandler = () => {
     if (name.length === 0) {
@@ -27,7 +30,7 @@ export default function EditBuildingForm({
         setname('');
         onBuildingUpdate();
       })
-      .catch((e) => alert('Fail to update building'));
+      .catch((e) => console.log('Fail to update building'));
   };
 
   return (
@@ -45,11 +48,18 @@ export default function EditBuildingForm({
       </InputGroup>
       <div>
         <Button
-          className={styles.floatRightBtn}
+          className={styles.mleft}
           variant="primary"
           onClick={updateClickHandler}
         >
           Update
+        </Button>
+        <Button
+          className={styles.floatRightBtn}
+          variant="secondary"
+          onClick={() => context.onEditFormCancelHandler()}
+        >
+          Cancel
         </Button>
       </div>
     </div>
