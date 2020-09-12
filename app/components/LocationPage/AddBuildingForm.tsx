@@ -2,9 +2,10 @@
 /* eslint-disable no-alert */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import { InputGroup, FormControl, Button, Alert } from 'react-bootstrap';
 import styles from './LocationPage.css';
 import Building from '../../entity/Building';
+import ToastMsg from './ToastMsg';
 
 type AddBuildingFormType = { onAddBuilding: () => void };
 
@@ -12,10 +13,11 @@ export default function AddBuildingForm({
   onAddBuilding,
 }: AddBuildingFormType) {
   const [buildingName, setbuildingName] = useState('');
+  const [nameValid, setnameValid] = useState(false);
 
   const addBuildingClickHandler = () => {
     if (buildingName.length === 0) {
-      alert('Building Name is required!');
+      setnameValid(true);
       return;
     }
     Building.create({ name: buildingName })
@@ -23,7 +25,7 @@ export default function AddBuildingForm({
         setbuildingName('');
         onAddBuilding();
       })
-      .catch((e) => alert('Fail to add building'));
+      .catch(() => console.log('Fail to add!'));
   };
 
   return (
@@ -39,6 +41,9 @@ export default function AddBuildingForm({
           onChange={(e) => setbuildingName(e.target.value)}
         />
       </InputGroup>
+
+      {nameValid && <Alert variant="danger">Building Name is required!</Alert>}
+
       <div>
         <Button
           className={styles.floatRightBtn}

@@ -17,15 +17,19 @@ import Room from '../../entity/Room';
 import { LocationPageContext } from '../../containers/LocationPage';
 import ToastMsg from './ToastMsg';
 
-export default function AddRoomForm() {
-  const [roomName, setroomName] = useState('');
-  const [roomCapacity, setroomCapacity] = useState('');
+type EditRoomFormType = {
+  room: Room;
+  onRoomUpdate: () => void;
+};
+
+export default function EditRoomForm({ room, onRoomUpdate }: EditRoomFormType) {
+  const [roomName, setroomName] = useState((room as any).name);
+  const [roomCapacity, setroomCapacity] = useState((room as any).capacity);
 
   const [validRoomName, setvalidRoomName] = useState(false);
   const [validRoomCapacity, setvalidRoomCapacity] = useState(false);
   const [mainValidation, setmainValidation] = useState(false);
   const [validationCapacity, setvalidationCapacity] = useState(false);
-  const [showToast, setshowToast] = useState(false);
 
   const context = useContext(LocationPageContext);
 
@@ -71,28 +75,26 @@ export default function AddRoomForm() {
     setvalidationCapacity(false);
   }, [roomName, roomCapacity]);
 
-  const addRoomClickHandler = () => {
+  const updateClickHandler = () => {
     if (!validate()) {
       return;
     }
     const roomCap = Number(roomCapacity);
-    Room.create({
-      name: roomName,
-      capacity: roomCap,
-      BuildingId: context.selectedBuildingId,
-    })
+    Room.update(
+      { name: roomName, capacity: roomCap },
+      { where: { id: (room as any).id } }
+    )
       .then(() => {
         setroomName('');
         setroomCapacity('');
-        context.onAddRoomHandler();
+        onRoomUpdate();
       })
-      .catch((e) => setshowToast(true));
+      .catch((e) => console.log('Fail to update!'));
   };
 
   return (
     <div className={styles.addBuildingWrap}>
-      {showToast && <ToastMsg />}
-      <h5>Add Room</h5>
+      <h5>Edit Room</h5>
 
       <label htmlFor="basic-url">Room Name</label>
       <InputGroup className="mb-3">
@@ -138,11 +140,18 @@ export default function AddRoomForm() {
 
       <div>
         <Button
-          className={styles.floatRightBtn}
+          className={styles.mleft}
           variant="primary"
-          onClick={addRoomClickHandler}
+          onClick={updateClickHandler}
         >
-          Save
+          Update
+        </Button>
+        <Button
+          className={styles.floatRightBtn}
+          variant="secondary"
+          onClick={() => context.onEditFormCancelHandler()}
+        >
+          Cancel
         </Button>
       </div>
     </div>
