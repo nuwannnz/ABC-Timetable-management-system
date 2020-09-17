@@ -7,6 +7,7 @@ import Faculty from '../entity/Faculty';
 import Department from '../entity/Department';
 import Center from '../entity/Center';
 import Lecture from '../entity/Lecture';
+import Tag from '../entity/Tag';
 
 type Props = {
   children: ReactNode;
@@ -27,6 +28,7 @@ export default function App(props: Props) {
 
     connectToDb();
     const con = getConnection();
+    Tag.findAll();
     Faculty.findAll();
     Department.findAll();
     Center.findAll();
@@ -35,7 +37,7 @@ export default function App(props: Props) {
     const sync = async () => {
       await con.sync({ force: true });
     };
-    // sync();
+    sync();
   }, []);
   return <div className="app">{children}</div>;
 }

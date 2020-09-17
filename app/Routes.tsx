@@ -9,6 +9,7 @@ import ContentWrapper from './containers/ContentWrapper';
 import LecturePage from './containers/LecturePage';
 import SubjectPage from './containers/SubjectPage';
 import LocationPage from './containers/LocationPage';
+import TagPage from './containers/TagPage';
 
 // Lazily load routes and code split with webpack
 // const LazyCounterPage = React.lazy(() =>
@@ -30,6 +31,7 @@ export default function Routes() {
           <Route path={routes.LECTURE} component={LecturePage} />
           <Route path={routes.SUBJECT} component={SubjectPage} />
           <Route path={routes.LOCATION} component={LocationPage} />
+          <Route path={routes.TAGS} component={TagPage} />
         </Switch>
       </ContentWrapper>
     </App>
