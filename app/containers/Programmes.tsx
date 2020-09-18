@@ -2,35 +2,40 @@
 /* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
-import TagDialog from '../components/tag/TagDialog';
-import Tag from '../entity/Tag';
+import ProgrammeDialog from '../components/programme/ProgrammeDialog';
+import Programme from '../entity/Programme';
 
-export default function TagPage() {
+export default function ProgrammePage() {
   const [displayDialog, setDisplayDialog] = useState(false);
-  const [tagList, setTagList] = useState<Tag[]>([]);
-  const [tagToUpdate, setTagToUpdate] = useState<Tag | null>(null);
+  const [programmeList, setProgrammeList] = useState<Programme[]>([]);
+  const [programmeToUpdate, setProgrammeToUpdate] = useState<Programme | null>(
+    null
+  );
 
-  const loadTags = async () => {
-    const tags = await Tag.findAll();
-    setTagList([...tags]);
+  const loadProgrammes = async () => {
+    const programmes = await Programme.findAll();
+    setProgrammeList([...programmes]);
   };
 
-  const handleTagDialogSubmit = (tag: Tag) => {
-    if ((tag as any).id) {
+  const handleProgrammeDialogSubmit = (programme: Programme) => {
+    if ((programme as any).id) {
       // update
-      Tag.update({ ...tag }, { where: { id: (tag as any).id } })
+      Programme.update(
+        { ...programme },
+        { where: { id: (programme as any).id } }
+      )
         .then(() => {
           setDisplayDialog(false);
-          setTagToUpdate(null);
-          loadTags();
+          setProgrammeToUpdate(null);
+          loadProgrammes();
           return true;
         })
         .catch((e) => console.log(e));
     } else {
       // create
-      Tag.create({ ...tag })
+      Programme.create({ ...programme })
         .then(() => {
-          loadTags();
+          loadProgrammes();
           setDisplayDialog(false);
           return true;
         })
@@ -38,43 +43,45 @@ export default function TagPage() {
     }
   };
 
-  const handleTagDeleteClick = (tag: Tag) => {
-    if (confirm('Delete this tag permanently?')) {
-      Tag.destroy({ where: { id: (tag as any).id } })
-        .then(() => loadTags())
+  const handleProgrammeDeleteClick = (programme: Programme) => {
+    if (confirm('Delete this programme permanently?')) {
+      Programme.destroy({ where: { id: (programme as any).id } })
+        .then(() => loadProgrammes())
         .catch((e) => console.log(e));
     }
   };
 
   useEffect(() => {
-    loadTags();
+    loadProgrammes();
   }, []);
   return (
     <div>
       <div className="d-flex align-items-center mb-3">
-        <h2>Tags</h2>
+        <h2>Programmes</h2>
         <Button
           onClick={() => setDisplayDialog(!displayDialog)}
           className="ml-3"
           size="sm"
           variant="primary"
         >
-          Add new tag
+          Add new programme
         </Button>
       </div>
       <Table>
         <thead>
           <tr>
             <th>Id</th>
-            <th>Tag name</th>
+            <th>Programme code</th>
+            <th>Programme name</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {tagList.map((t: any) => (
-            <tr key={t.id}>
-              <td>{t.id}</td>
-              <td>{t.name}</td>
+          {programmeList.map((p: any) => (
+            <tr key={p.id}>
+              <td>{p.id}</td>
+              <td>{p.code}</td>
+              <td>{p.name}</td>
               <td>
                 <div className="d-flex justify-content-center align-items-center">
                   <Button
@@ -82,7 +89,7 @@ export default function TagPage() {
                     variant="info"
                     size="sm"
                     onClick={() => {
-                      setTagToUpdate(t);
+                      setProgrammeToUpdate(p);
                       setDisplayDialog(true);
                     }}
                   >
@@ -91,7 +98,7 @@ export default function TagPage() {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleTagDeleteClick(t)}
+                    onClick={() => handleProgrammeDeleteClick(p)}
                   >
                     Delete
                   </Button>
@@ -103,14 +110,14 @@ export default function TagPage() {
       </Table>
 
       {displayDialog && (
-        <TagDialog
+        <ProgrammeDialog
           show={displayDialog}
           closeClickHandler={() => {
             setDisplayDialog(false);
-            setTagToUpdate(null);
+            setProgrammeToUpdate(null);
           }}
-          onSubmit={handleTagDialogSubmit}
-          tag={tagToUpdate}
+          onSubmit={handleProgrammeDialogSubmit}
+          programme={programmeToUpdate}
         />
       )}
     </div>

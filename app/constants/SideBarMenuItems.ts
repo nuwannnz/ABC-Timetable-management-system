@@ -60,4 +60,9 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     content: 'Tags',
     link: routes.TAGS,
   },
+  {
+    index: 11,
+    content: 'Programmes',
+    link: routes.PROGRAMMES,
+  },
 ];

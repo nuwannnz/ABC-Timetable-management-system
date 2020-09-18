@@ -123,7 +123,10 @@ export default function SubjectPage() {
       {displayDialog && (
         <SubjectDialog
           show={displayDialog}
-          closeClickHandler={() => setDisplayDialog(false)}
+          closeClickHandler={() => {
+            setDisplayDialog(false);
+            setSubjectToUpdate(null);
+          }}
           onSubmit={subjectDialogSubmitHandler}
           subject={subjectToUpdate}
         />

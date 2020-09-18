@@ -140,7 +140,10 @@ export default function LecturePage() {
       </Table>
       {displayDialog && (
         <LectureDialog
-          closeClickHandler={() => setDisplayDialog(false)}
+          closeClickHandler={() => {
+            setDisplayDialog(false);
+            setLecturetoUpdate(null);
+          }}
           show={displayDialog}
           lecture={lectureToUpdate}
           onSubmit={handleLectureDialogSubmit}

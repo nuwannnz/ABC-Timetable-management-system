@@ -8,6 +8,8 @@ import Department from '../entity/Department';
 import Center from '../entity/Center';
 import Lecture from '../entity/Lecture';
 import Tag from '../entity/Tag';
+import StudentBatch from '../entity/StudentBatch';
+import Programme from '../entity/Programme';
 
 type Props = {
   children: ReactNode;
@@ -20,11 +22,13 @@ export default function App(props: Props) {
     Lecture.belongsTo(Department);
     Lecture.belongsTo(Center);
     Lecture.belongsTo(Building);
+    StudentBatch.belongsTo(Programme);
 
     Faculty.hasMany(Lecture);
     Department.hasMany(Lecture);
     Center.hasMany(Lecture);
     Building.hasMany(Lecture);
+    Programme.hasMany(StudentBatch);
 
     connectToDb();
     const con = getConnection();
@@ -34,6 +38,8 @@ export default function App(props: Props) {
     Center.findAll();
     Building.findAll();
     Lecture.findAll();
+    Programme.findAll();
+    StudentBatch.findAll();
     const sync = async () => {
       await con.sync({ force: true });
     };
