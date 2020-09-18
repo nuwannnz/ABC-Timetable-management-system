@@ -11,6 +11,7 @@ import SubjectPage from './containers/SubjectPage';
 import LocationPage from './containers/LocationPage';
 import TagPage from './containers/TagPage';
 import ProgrammePage from './containers/Programmes';
+import StudentBatchPage from './containers/StudentBatchPage';
 
 // Lazily load routes and code split with webpack
 // const LazyCounterPage = React.lazy(() =>
@@ -34,6 +35,7 @@ export default function Routes() {
           <Route path={routes.LOCATION} component={LocationPage} />
           <Route path={routes.PROGRAMMES} component={ProgrammePage} />
           <Route path={routes.TAGS} component={TagPage} />
+          <Route path={routes.STUDENT_BATCHES} component={StudentBatchPage} />
         </Switch>
       </ContentWrapper>
     </App>
