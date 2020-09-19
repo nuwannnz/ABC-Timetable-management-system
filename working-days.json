@@ -1,0 +1,42 @@
+{
+  "numWorkingDays": 2,
+  "workingDays": {
+    "monday": true,
+    "tuesday": true,
+    "wednesday": true,
+    "thursday": false,
+    "friday": false,
+    "saturday": false,
+    "sunday": false
+  },
+  "workingTimePerDay": {
+    "hours": 3,
+    "minutes": 7
+  },
+  "timeSlots": [
+    {
+      "id": "f6c0ef69-d211-4f13-97ef-59fb6fdcde9e",
+      "startTime": {
+        "hour": 15,
+        "minute": 4
+      },
+      "endTime": {
+        "hour": 15,
+        "minute": 34
+      },
+      "AM": false
+    },
+    {
+      "id": "ba45a5ef-f734-4709-a158-327a6a369dfb",
+      "startTime": {
+        "hour": 12,
+        "minute": 6
+      },
+      "endTime": {
+        "hour": 13,
+        "minute": 6
+      },
+      "AM": true
+    }
+  ]
+}
