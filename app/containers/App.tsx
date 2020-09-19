@@ -10,6 +10,7 @@ import Lecture from '../entity/Lecture';
 import Tag from '../entity/Tag';
 import StudentBatch from '../entity/StudentBatch';
 import Programme from '../entity/Programme';
+import { seedDB } from '../utils/seed';
 
 type Props = {
   children: ReactNode;
@@ -42,6 +43,7 @@ export default function App(props: Props) {
     StudentBatch.findAll();
     const sync = async () => {
       await con.sync({ force: true });
+      seedDB();
     };
     sync();
   }, []);
