@@ -65,4 +65,9 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     content: 'Programmes',
     link: routes.PROGRAMMES,
   },
+  {
+    index: 12,
+    content: 'Sessions',
+    link: routes.SESSIONS,
+  },
 ];

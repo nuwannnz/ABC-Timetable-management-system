@@ -1,3 +1,8 @@
+/* eslint-disable promise/always-return */
+/* eslint-disable promise/catch-or-return */
+/* eslint-disable promise/no-nesting */
+/* eslint-disable prefer-const */
+import { v4 as uuidv4 } from 'uuid';
 import Building from '../entity/Building';
 import Center from '../entity/Center';
 import Department from '../entity/Department';
@@ -5,6 +10,7 @@ import Faculty from '../entity/Faculty';
 import Lecture from '../entity/Lecture';
 import Programme from '../entity/Programme';
 import Room from '../entity/Room';
+import Session from '../entity/Session';
 import StudentBatch from '../entity/StudentBatch';
 /* eslint-disable import/prefer-default-export */
 import Subject from '../entity/Subject';
@@ -304,32 +310,32 @@ const studentBatchSeed = [
     ProgrammeId: 1,
     groups: [
       {
-        id: 1,
+        id: uuidv4(),
         groupNumber: 1,
         subGroups: [
           {
-            id: 2,
+            id: uuidv4(),
             groupNumber: 1,
             subGroupNumber: 1,
           },
           {
-            id: 2,
+            id: uuidv4(),
             groupNumber: 1,
             subGroupNumber: 2,
           },
         ],
       },
       {
-        id: 2,
+        id: uuidv4(),
         groupNumber: 2,
         subGroups: [
           {
-            id: 2,
+            id: uuidv4(),
             groupNumber: 2,
             subGroupNumber: 1,
           },
           {
-            id: 2,
+            id: uuidv4(),
             groupNumber: 2,
             subGroupNumber: 2,
           },
@@ -343,22 +349,22 @@ const studentBatchSeed = [
     ProgrammeId: 2,
     groups: [
       {
-        id: 3,
+        id: uuidv4(),
         groupNumber: 1,
         subGroups: [
           {
-            id: 6,
+            id: uuidv4(),
             groupNumber: 1,
             subGroupNumber: 1,
           },
         ],
       },
       {
-        id: 5,
-        groupNumber: 1,
+        id: uuidv4(),
+        groupNumber: 2,
         subGroups: [
           {
-            id: 8,
+            id: uuidv4(),
             groupNumber: 1,
             subGroupNumber: 2,
           },
@@ -372,16 +378,16 @@ const studentBatchSeed = [
     ProgrammeId: 3,
     groups: [
       {
-        id: 9,
+        id: uuidv4(),
         groupNumber: 1,
         subGroups: [
           {
-            id: 10,
+            id: uuidv4(),
             groupNumber: 1,
             subGroupNumber: 1,
           },
           {
-            id: 10,
+            id: uuidv4(),
             groupNumber: 1,
             subGroupNumber: 2,
           },
@@ -395,22 +401,41 @@ const studentBatchSeed = [
     ProgrammeId: 2,
     groups: [
       {
-        id: 11,
+        id: uuidv4(),
         groupNumber: 1,
         subGroups: [
           {
-            id: 22,
+            id: uuidv4(),
             groupNumber: 1,
             subGroupNumber: 1,
           },
           {
-            id: 24,
+            id: uuidv4(),
             groupNumber: 1,
             subGroupNumber: 2,
           },
         ],
       },
     ],
+  },
+];
+
+const sessionSeed = [
+  {
+    studentCount: 100,
+    durationHours: 2,
+    durationMinutes: 30,
+    groupId: studentBatchSeed[0].groups[0].id,
+    SubjectId: 1,
+    StudentBatchId: 1,
+  },
+  {
+    studentCount: 150,
+    durationHours: 3,
+    durationMinutes: 0,
+    groupId: studentBatchSeed[1].groups[0].id,
+    SubjectId: 3,
+    StudentBatchId: 2,
   },
 ];
 
@@ -474,6 +499,31 @@ const seedStudentBatches = () => {
   });
 };
 
+const seedSessions = () => {
+  let i = 1;
+  sessionSeed.forEach((s) => {
+    Session.create({ ...s })
+      .then((createdSession) => {
+        Lecture.findByPk(i).then((l) => {
+          (createdSession as any).addLecture(l);
+        });
+        Lecture.findByPk(i + 1).then((l) => {
+          (createdSession as any).addLecture(l);
+        });
+
+        Tag.findByPk(i).then((t) => {
+          (createdSession as any).addTag(t);
+        });
+
+        Tag.findByPk(i + 1).then((t) => {
+          (createdSession as any).addTag(t);
+        });
+        return true;
+      })
+      .catch((e) => {});
+  });
+};
+
 export const seedDB = () => {
   seedSubjects();
   seedBuildings();
@@ -485,4 +535,5 @@ export const seedDB = () => {
   seedProgrammes();
   seedTags();
   seedStudentBatches();
+  seedSessions();
 };
