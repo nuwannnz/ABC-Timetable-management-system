@@ -11,7 +11,6 @@ import Building from '../entity/Building';
 import EditBuildingForm from '../components/LocationPage/EditBuildingForm';
 import Room from '../entity/Room';
 import EditRoomForm from '../components/LocationPage/EditRoomForm';
-import ToastMsg from '../components/LocationPage/ToastMsg';
 
 export const LocationPageContext = React.createContext({
   onDeleteBuildingHandler: (p: number) => {},
