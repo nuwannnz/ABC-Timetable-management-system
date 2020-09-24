@@ -159,6 +159,7 @@ export default function SessionDialog({
 
               (updatedSession as any).addLectures(selectedLectures);
               (updatedSession as any).addTags(selectedTags);
+              onSubmit();
               return true;
             })
             .catch((e) => {});
@@ -169,13 +170,17 @@ export default function SessionDialog({
       // create
       Session.create({ ...sessionDao })
         .then((createdSession) => {
-          (createdSession as any).addLectures(selectedLectures);
-          (createdSession as any).addTags(selectedTags);
+          const addedLecture = (createdSession as any).addLectures(
+            selectedLectures
+          );
+          const addedTag = (createdSession as any).addTags(selectedTags);
+
+          return Promise.all([addedLecture, addedTag]).then(() => {
+            onSubmit();
+          });
         })
         .catch((e) => console.log(e));
     }
-
-    onSubmit();
   };
 
   const handleLectureSelected = (lectureId: number) => {
