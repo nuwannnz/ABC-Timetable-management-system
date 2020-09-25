@@ -2,9 +2,37 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: darkslategrey;
+  background-color: #1d2124;
   width: 20%;
-  padding: 20px;
+  padding: 20px 10px;
+}
+
+.sideBarMenuItemContainer {
+  padding: 10px;
+  border-radius: 8px;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.sideBarMenuItemActive {
+  background-color: #1e7e34;
+}
+
+.sideBarSubMenuItemActive {
+  background-color: #1d2124;
+}
+
+.sideBarMenuItemContainer * {
+  text-decoration: none;
+  outline: none;
+}
+
+.sideBarMenuItemContainer a:hover {
+  color: #fff !important;
+}
+
+.notActive:hover {
+  background-color: #333a40;
 }
 
 .titleContainer {
@@ -16,6 +44,7 @@
 
 .titleContainer h5 {
   text-align: center;
-  margin: 0px;
+  margin: 0;
   padding: 5px;
+  color: #fff;
 }

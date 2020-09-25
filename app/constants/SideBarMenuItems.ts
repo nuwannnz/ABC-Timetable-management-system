@@ -20,8 +20,8 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
   },
   {
     index: 3,
-    content: 'Buildings',
-    link: routes.BUILDINGS,
+    content: 'Locations',
+    link: routes.LOCATION,
   },
   {
     index: 4,
@@ -59,5 +59,15 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     index: 10,
     content: 'Tags',
     link: routes.TAGS,
+  },
+  {
+    index: 11,
+    content: 'Programmes',
+    link: routes.PROGRAMMES,
+  },
+  {
+    index: 12,
+    content: 'Sessions',
+    link: routes.SESSIONS,
   },
 ];

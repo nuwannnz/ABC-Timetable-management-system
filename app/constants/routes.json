@@ -3,12 +3,14 @@
   "COUNTER": "/counter",
   "LECTURE": "/lecture",
   "SUBJECT": "/subject",
-  "BUILDINGS": "/building",
+  "LOCATION": "/location",
   "WORKING_DAYS": "/workingday",
   "STUDENT_BATCHES": "/student",
   "STATISTICS": "/statistic",
   "STATISTICS_STUDENT": "/statistic/student",
   "STATISTICS_SUBJECT": "/statistic/subject",
   "STATISTICS_LECTURE": "/statistic/lecture",
-  "TAGS": "/tag"
+  "TAGS": "/tag",
+  "PROGRAMMES": "/programmes",
+  "SESSIONS": "/session"
 }

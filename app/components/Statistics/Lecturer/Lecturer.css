@@ -1,0 +1,13 @@
+.tabColor {
+  color: black;
+}
+
+.tabWrap {
+  margin-top: 15px;
+}
+
+.center {
+  text-align: center;
+  margin: 5px;
+  font-weight: bold;
+}

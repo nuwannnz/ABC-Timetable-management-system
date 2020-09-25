@@ -4,7 +4,9 @@ import { getConnection } from '../utils/db';
 const sequelize = getConnection();
 
 // eslint-disable-next-line import/prefer-default-export
-class Subject extends Model {}
+class Subject extends Model {
+  id: any;
+}
 
 Subject.init(
   {
@@ -14,6 +16,22 @@ Subject.init(
     },
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lectureHours: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
+    tutorialHours: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
+    labHours: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
+    evaluationHours: {
+      type: DataTypes.NUMBER,
       allowNull: false,
     },
   },

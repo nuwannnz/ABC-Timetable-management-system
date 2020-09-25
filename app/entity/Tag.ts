@@ -1,17 +1,17 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { getConnection } from '../utils/db';
-import Room from './Room';
 
 const sequelize = getConnection();
 
 // eslint-disable-next-line import/prefer-default-export
-class Building extends Model {}
+class Tag extends Model {}
 
-Building.init(
+Tag.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,
@@ -20,11 +20,10 @@ Building.init(
   },
   {
     sequelize,
-    modelName: 'Building',
+    modelName: 'Tag',
   }
 );
 
-Building.hasMany(Room);
-// Building.hasMany(Lecture);
+console.log(Tag === sequelize.models.Subject);
 
-export default Building;
+export default Tag;
