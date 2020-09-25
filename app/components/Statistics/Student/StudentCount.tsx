@@ -1,3 +1,4 @@
+import { count } from 'console';
 /* eslint-disable promise/no-nesting */
 /* eslint-disable promise/catch-or-return */
 /* eslint-disable no-continue */
@@ -15,18 +16,11 @@ import { stringify } from 'querystring';
 /* eslint-disable array-callback-return */
 import React, { useEffect, useRef, useState } from 'react';
 import { Table } from 'react-bootstrap';
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import Faculty from '../../../entity/Faculty';
 import Session from '../../../entity/Session';
 
-const colors = ['blue', 'orange', 'grey', 'yellow'];
-
-const facultyNameList = [
-  'Computing',
-  'Engineering',
-  'Business',
-  'Huminities & Sciences',
-];
+const colors = ['blue', 'orange', 'red', 'yellow'];
 
 export default function StudentCount() {
   const [chartData, setchartData] = useState({});
@@ -39,16 +33,28 @@ export default function StudentCount() {
     const d: any[] = [];
     let colorIndex = 0;
 
-    faculties.current.forEach((value, key, m) => {
-      d.push({
-        label: key,
-        data: value,
-        backgroundColor: colors.map((v) => colors[colorIndex]),
-      });
-      colorIndex += 1;
-      facultyName.push(key);
-      console.log('faculty names', facultyName);
+    const c: number[] = [];
+
+    faculties.current.forEach((v, k, m) => {
+      c.push(v);
+
+      facultyName.push(k);
     });
+    d.push({
+      label: 'Student Count',
+      data: c,
+      fill: false,
+      pointRadius: 5,
+      borderColor: '#aaa',
+      backgroundColor: colors.slice(0, facultyName.length),
+    });
+    colorIndex += 1;
+
+    const chardData = {
+      labels: facultyName,
+      datasets: d,
+    };
+
     setchartData({
       labels: facultyName,
       datasets: d,
@@ -78,7 +84,8 @@ export default function StudentCount() {
               }
             });
           });
-          console.log('facs', faculties);
+
+          data();
         }
       );
     });
@@ -86,9 +93,6 @@ export default function StudentCount() {
 
   useEffect(() => {
     loadSessions();
-    setTimeout(() => {
-      data();
-    }, 1000);
   }, []);
 
   const getTableLabelValues = () => {
@@ -107,8 +111,20 @@ export default function StudentCount() {
 
   return (
     <div>
-      <Bar data={chartData} />
-      {console.log('faculty names', facultyName)}
+      <Line
+        data={chartData}
+        options={{
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            ],
+          },
+        }}
+      />
 
       <div>
         <Table striped bordered hover size="sm">

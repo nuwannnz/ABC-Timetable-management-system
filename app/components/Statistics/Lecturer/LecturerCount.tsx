@@ -114,7 +114,22 @@ export default function LecturerCount() {
         });
       })}
 
-      <Bar data={chartData} />
+      <Bar
+        data={chartData}
+        options={{
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            ],
+          },
+        }}
+      />
+
+      {console.log('Chart Data :', chartData)}
 
       <div>
         <Table striped bordered hover size="sm">
