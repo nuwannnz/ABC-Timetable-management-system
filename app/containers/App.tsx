@@ -59,7 +59,7 @@ export default function App(props: Props) {
       await con.sync({ force: true });
       seedDB();
     };
-    sync();
+    // sync();
   }, []);
   return <div className="app">{children}</div>;
 }
