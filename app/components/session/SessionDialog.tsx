@@ -76,12 +76,13 @@ export default function SessionDialog({
     for (let i = 0; i < groups.length; i++) {
       if (groups[i].id === idToMatch) {
         group = groups[i];
-        break;
+        // break;
       }
       const sGroups = groups[i].subGroups;
       for (let j = 0; j < sGroups.length; j++) {
         if (sGroups[j].id === idToMatch) {
           subGroup = sGroups[j];
+          group = groups[i];
           break;
         }
       }
