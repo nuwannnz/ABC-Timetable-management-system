@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable prefer-destructuring */
 /* eslint-disable promise/always-return */
 /* eslint-disable promise/no-nesting */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -18,16 +20,6 @@ type SessionDialogProps = {
   // eslint-disable-next-line react/require-default-props
   session?: Session | null;
   onSubmit: () => void;
-};
-
-type GroupListItemType = {
-  batchId: number;
-  year: number;
-  semester: number;
-  groupId: string;
-  programmeCode: string;
-  groupNumber: number;
-  subgroups: SubGroupType[];
 };
 
 type ChipPropType = {
@@ -58,24 +50,54 @@ export default function SessionDialog({
   const [subjectList, setSubjectList] = useState<Subject[]>([]);
   const [tagList, setTagList] = useState<Tag[]>([]);
   const [batchList, setBatchList] = useState<StudentBatch[]>([]);
-  const [groupList, setGroupList] = useState<GroupListItemType[]>([]);
 
   const [selectedLectures, setSelectedLectures] = useState<Lecture[]>(
-    session ? (session as any).profiles : []
+    session ? session.get().Lectures : []
   );
   const [selectedTags, setSelectedTags] = useState<Tag[]>(
-    session ? (session as any).tags : []
+    session ? (session as any).Tags : []
   );
   const [selectedSubject, setSelectedSubject] = useState(
     session ? (session as any).SubjectId : -1
   );
 
-  const [selectedBatch, setSelectedBatch] = useState<StudentBatch | null>(null);
+  const [selectedBatch, setSelectedBatch] = useState<StudentBatch | null>(
+    session ? session.get().StudentBatch : null
+  );
 
-  const [selectedGroup, setSelectedGroup] = useState<GroupType | null>(null);
+  const getSelectedGroupInfo = (mainGroup = true) => {
+    if (!session) {
+      return null;
+    }
+    const idToMatch = session.get().groupId;
+    let group = null;
+    let subGroup = null;
+    const groups = session.get().StudentBatch.groups;
+    for (let i = 0; i < groups.length; i++) {
+      if (groups[i].id === idToMatch) {
+        group = groups[i];
+        break;
+      }
+      const sGroups = groups[i].subGroups;
+      for (let j = 0; j < sGroups.length; j++) {
+        if (sGroups[j].id === idToMatch) {
+          subGroup = sGroups[j];
+          break;
+        }
+      }
+    }
+    if (mainGroup) {
+      return group;
+    }
+    return subGroup;
+  };
+
+  const [selectedGroup, setSelectedGroup] = useState<GroupType | null>(
+    getSelectedGroupInfo()
+  );
 
   const [selectedSubGroup, setSelectedSubGroup] = useState<SubGroupType | null>(
-    null
+    getSelectedGroupInfo(false)
   );
 
   const [hours, setHours] = useState(
@@ -143,29 +165,27 @@ export default function SessionDialog({
 
     if (sessionDao.id) {
       // update
-      Session.update({ ...sessionDao }, { where: { id: sessionDao.id } })
-        .then(() => {
-          Session.findOne({
-            where: { id: sessionDao.id },
-            include: [Lecture, Tag],
-          })
-            .then((updatedSession) => {
-              (updatedSession as any).lectures.forEach((l: any) =>
-                (updatedSession as any).removeLecture(l)
-              );
-              (updatedSession as any).tags.forEach((t: any) =>
-                (updatedSession as any).removeTag(t)
-              );
 
-              (updatedSession as any).addLectures(selectedLectures);
-              (updatedSession as any).addTags(selectedTags);
-              onSubmit();
-              return true;
-            })
-            .catch((e) => {});
-          return true;
-        })
-        .catch((e) => {});
+      (async () => {
+        await Session.update(
+          { ...sessionDao },
+          { where: { id: sessionDao.id } }
+        );
+        const updatedSession = (await Session.findOne({
+          where: { id: sessionDao.id },
+        })) as any;
+
+        // remove current lectures and tags of the session
+        const currentLectures = await updatedSession.getLectures();
+        const currentTags = await updatedSession.getTags();
+        await updatedSession.removeLectures(currentLectures);
+        await updatedSession.removeTags(currentTags);
+
+        // add the updated lectures and tags for the session
+        await updatedSession.addLectures(selectedLectures);
+        await updatedSession.addTags(selectedTags);
+        onSubmit();
+      })();
     } else {
       // create
       Session.create({ ...sessionDao })
@@ -309,6 +329,7 @@ export default function SessionDialog({
                 <Form.Label>Select Batch</Form.Label>
                 <Form.Control
                   as="select"
+                  value={selectedBatch ? selectedBatch.get().id : -1}
                   onChange={(e) => {
                     handleStudentBatchSelected(parseInt(e.target.value, 10));
                   }}
@@ -326,6 +347,7 @@ export default function SessionDialog({
               <Form.Group controlId="tagName">
                 <Form.Label>Select Group</Form.Label>
                 <Form.Control
+                  value={selectedGroup ? selectedGroup.id : -1}
                   as="select"
                   onChange={(e) => {
                     handleGroupSelected(e.target.value);
@@ -348,6 +370,7 @@ export default function SessionDialog({
                 <Form.Label>Select a sub group</Form.Label>
                 <Form.Control
                   as="select"
+                  value={selectedSubGroup ? selectedSubGroup.id : -1}
                   onChange={(e) => {
                     handleSubGroupSelected(e.target.value);
                   }}
@@ -374,6 +397,7 @@ export default function SessionDialog({
                 <Form.Label>Select Subject</Form.Label>
                 <Form.Control
                   as="select"
+                  value={selectedSubject}
                   onChange={(e) => {
                     setSelectedSubject(parseInt(e.target.value, 10));
                   }}
@@ -399,6 +423,7 @@ export default function SessionDialog({
                     <Form.Label>Hours</Form.Label>
                     <Form.Control
                       as="select"
+                      value={hours}
                       onChange={(e) => {
                         setHours(parseInt(e.target.value, 10));
                       }}
@@ -419,6 +444,7 @@ export default function SessionDialog({
                     <Form.Label>Minutes</Form.Label>
                     <Form.Control
                       as="select"
+                      value={minutes}
                       onChange={(e) => {
                         setMinutes(parseInt(e.target.value, 10));
                       }}
