@@ -17,11 +17,7 @@ import { stringify } from 'querystring';
 import React, { useEffect, useState } from 'react';
 import { Alert, Table } from 'react-bootstrap';
 import { Bar } from 'react-chartjs-2';
-import Programme from '../../../entity/Programme';
-
 import StudentBatch from '../../../entity/StudentBatch';
-
-const colors = ['blue', 'orange', 'grey', 'yellow'];
 
 type YearLableType = {
   year: number;
@@ -114,13 +110,13 @@ export default function GroupsCount({
   useEffect(() => {
     const mainGroupData = {
       label: 'Main group',
-      backgroundColor: 'blue',
+      backgroundColor: '#33FFCC',
       data: lables.map((l) => getMainGroupCount(l.year, l.semester)),
     };
 
     const subGroupData = {
       label: 'Sub group',
-      backgroundColor: 'orange',
+      backgroundColor: '#B366CC',
       data: lables.map((l) => getSubGroupCount(l.year, l.semester)),
     };
 
@@ -162,9 +158,6 @@ export default function GroupsCount({
               <tbody>
                 <tr>
                   <td>Main Group</td>
-                  {/* {[4, 5, 2, 5, 6, 4, 6, 7].map((x) => (
-                    <td>{x}</td>
-                  ))} */}
 
                   {chartData &&
                     chartData.datasets[0].data.map((d: any, i: number) => (

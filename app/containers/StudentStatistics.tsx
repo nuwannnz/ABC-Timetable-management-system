@@ -3,14 +3,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-no-undef */
 import React, { useEffect, useState } from 'react';
-import {
-  Dropdown,
-  Form,
-  FormControl,
-  InputGroup,
-  Tab,
-  Tabs,
-} from 'react-bootstrap';
+import { Form, Tab, Tabs } from 'react-bootstrap';
 import styles from '../components/Statistics/Student/Student.css';
 import GroupsCount from '../components/Statistics/Student/GroupsCount';
 import StudentCount from '../components/Statistics/Student/StudentCount';
@@ -52,30 +45,32 @@ export default function StudentStatistics() {
             tabClassName={styles.tabColor}
           >
             <div className={styles.progWrap}>
-              <Form inline>
-                <Form.Label
-                  className="my-1 mr-2"
-                  htmlFor="inlineFormCustomSelectPref"
-                >
-                  Programme
-                </Form.Label>
-                <Form.Control
-                  as="select"
-                  className="my-1 mr-sm-2"
-                  id="inlineFormCustomSelectPref"
-                  value={selectedProgrammeId ? selectedProgrammeId : -1}
-                  onChange={(e) =>
-                    setSelectedProgrammeId(parseInt(e.target.value, 10))
-                  }
-                  custom
-                >
-                  {programmes.map((p: any) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form>
+              <div className={styles.filtersWrap}>
+                <Form inline>
+                  <Form.Label
+                    className="my-1 mr-2"
+                    htmlFor="inlineFormCustomSelectPref"
+                  >
+                    Programme
+                  </Form.Label>
+                  <Form.Control
+                    as="select"
+                    className="my-1 mr-sm-2"
+                    id="inlineFormCustomSelectPref"
+                    value={selectedProgrammeId ? selectedProgrammeId : -1}
+                    onChange={(e) =>
+                      setSelectedProgrammeId(parseInt(e.target.value, 10))
+                    }
+                    custom
+                  >
+                    {programmes.map((p: any) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form>
+              </div>
             </div>
 
             <h3 className={styles.center}> Main and Sub Group Count</h3>

@@ -16,6 +16,7 @@ import WorkingDaysPage from './containers/WorkingDaysPage';
 import SessionPage from './containers/SessionPage';
 import LecturerStatistics from './containers/LecturerStatistics';
 import StudentStatistics from './containers/StudentStatistics';
+import SubjectStatistics from './containers/SubjectStatistics';
 
 // Lazily load routes and code split with webpack
 // const LazyCounterPage = React.lazy(() =>
@@ -49,6 +50,10 @@ export default function Routes() {
           <Route
             path={routes.STATISTICS_STUDENT}
             component={StudentStatistics}
+          />
+          <Route
+            path={routes.STATISTICS_SUBJECT}
+            component={SubjectStatistics}
           />
         </Switch>
       </ContentWrapper>
