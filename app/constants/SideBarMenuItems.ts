@@ -32,6 +32,13 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     index: 5,
     content: 'Students',
     link: routes.STUDENT_BATCHES,
+    childrenMenuItems: [
+      {
+        index: 21,
+        content: 'Prefered Group Rooms',
+        link: routes.STUDENT_GROUP_ROOMS,
+      },
+    ],
   },
   {
     index: 6,
