@@ -19,6 +19,7 @@ import StudentStatistics from './containers/StudentStatistics';
 import SubjectStatistics from './containers/SubjectStatistics';
 import StudentGroupRoomsPage from './containers/StudentGroupRoomsPage';
 import TagRoomsPage from './containers/TagRoomsPage';
+import SubjectRoomsPage from './containers/SubjectRoomsPage';
 
 // Lazily load routes and code split with webpack
 // const LazyCounterPage = React.lazy(() =>
@@ -38,6 +39,7 @@ export default function Routes() {
       <ContentWrapper>
         <Switch>
           <Route path={routes.LECTURE} component={LecturePage} />
+          <Route path={routes.SUBJECT_ROOMS} component={SubjectRoomsPage} />
           <Route path={routes.SUBJECT} component={SubjectPage} />
           <Route path={routes.LOCATION} component={LocationPage} />
           <Route path={routes.PROGRAMMES} component={ProgrammePage} />

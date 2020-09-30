@@ -48,6 +48,10 @@ export default function App(props: Props) {
     Room.belongsToMany(Tag, { through: 'tag_rooms' });
     Tag.belongsToMany(Room, { through: 'tag_rooms' });
 
+    // subject relationships
+    Room.belongsToMany(Subject, { through: 'subject_rooms' });
+    Subject.belongsToMany(Room, { through: 'subject_rooms' });
+
     connectToDb();
     const con = getConnection();
     Tag.findAll();

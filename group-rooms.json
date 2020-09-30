@@ -15,6 +15,18 @@
     {
       "groupId": "b77c145b-d605-4e2f-ba8d-69eb4880b210",
       "roomId": [4, 8]
+    },
+    {
+      "groupId": "08eec24b-7756-447b-901c-d614ac8ce30c",
+      "roomId": [3]
+    },
+    {
+      "groupId": "08eec24b-7756-447b-901c-d614ac8ce30c",
+      "roomId": [5]
+    },
+    {
+      "groupId": "4447365d-c9be-45c5-834a-5bbb7f06e81c",
+      "roomId": [1]
     }
   ],
   "subGroupRooms": []

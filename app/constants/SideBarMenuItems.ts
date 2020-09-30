@@ -17,6 +17,13 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     index: 2,
     content: 'Subjects',
     link: routes.SUBJECT,
+    childrenMenuItems: [
+      {
+        index: 22,
+        content: 'Prefered Subject Rooms',
+        link: routes.SUBJECT_ROOMS,
+      },
+    ],
   },
   {
     index: 3,

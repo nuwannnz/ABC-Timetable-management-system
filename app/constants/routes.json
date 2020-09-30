@@ -3,6 +3,7 @@
   "COUNTER": "/counter",
   "LECTURE": "/lecture",
   "SUBJECT": "/subject",
+  "SUBJECT_ROOMS": "/subject/rooms",
   "LOCATION": "/location",
   "WORKING_DAYS": "/workingday",
   "STUDENT_GROUP_ROOMS": "/student/group/romms",
