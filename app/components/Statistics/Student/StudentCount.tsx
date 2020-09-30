@@ -20,7 +20,36 @@ import { Line } from 'react-chartjs-2';
 import Faculty from '../../../entity/Faculty';
 import Session from '../../../entity/Session';
 
-const colors = ['blue', 'orange', 'red', 'yellow'];
+const colors = [
+  '#33FFCC',
+  '#B366CC',
+  '#E6331A',
+  '#66994D',
+  '#4D8000',
+  '#E666FF',
+  '#FFB399',
+  '#FF33FF',
+  '#FF6633',
+  '#991AFF',
+  '#00B3E6',
+  '#CC80CC',
+  '#E6B333',
+  '#3366E6',
+  '#B34D4D',
+  '#FFFF99',
+  '#999966',
+  '#B33300',
+  '#99FF99',
+  '#809900',
+  '#66664D',
+  '#6680B3',
+  '#80B300',
+  '#FF99E6',
+  '#E6B3B3',
+  '#FF1A66',
+  '#66991A',
+  '#CCFF1A',
+];
 
 export default function StudentCount() {
   const [chartData, setchartData] = useState({});
