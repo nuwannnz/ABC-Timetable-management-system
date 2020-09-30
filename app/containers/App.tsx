@@ -44,6 +44,10 @@ export default function App(props: Props) {
     Session.belongsToMany(Lecture, { through: 'lecture_session' });
     Session.belongsToMany(Tag, { through: 'tag_session' });
 
+    // tag relationships
+    Room.belongsToMany(Tag, { through: 'tag_rooms' });
+    Tag.belongsToMany(Room, { through: 'tag_rooms' });
+
     connectToDb();
     const con = getConnection();
     Tag.findAll();
