@@ -12,6 +12,7 @@
   "STATISTICS_SUBJECT": "/statistic/subject",
   "STATISTICS_LECTURE": "/statistic/lecture",
   "TAGS": "/tag",
+  "TAGS_ROOMS": "/tag/rooms",
   "PROGRAMMES": "/programmes",
   "SESSIONS": "/session"
 }

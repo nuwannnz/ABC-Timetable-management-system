@@ -1,0 +1,21 @@
+{
+  "groupRooms": [
+    {
+      "groupId": "ba117dd4-6ae4-4628-a4f0-d45d2b127bd3",
+      "roomId": [5, 3]
+    },
+    {
+      "groupId": "8d80581d-28b7-48b8-bc1c-5afe2b7788b7",
+      "roomId": [5, 8, 4]
+    },
+    {
+      "groupId": "b77c145b-d605-4e2f-ba8d-69eb4880b210",
+      "roomId": [5]
+    },
+    {
+      "groupId": "b77c145b-d605-4e2f-ba8d-69eb4880b210",
+      "roomId": [4, 8]
+    }
+  ],
+  "subGroupRooms": []
+}

@@ -66,6 +66,13 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     index: 10,
     content: 'Tags',
     link: routes.TAGS,
+    childrenMenuItems: [
+      {
+        index: 20,
+        content: 'Prefered Rooms',
+        link: routes.TAGS_ROOMS,
+      },
+    ],
   },
   {
     index: 11,

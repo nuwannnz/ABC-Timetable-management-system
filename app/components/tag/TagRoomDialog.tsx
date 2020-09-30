@@ -1,34 +1,16 @@
-/* eslint-disable no-unneeded-ternary */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { useEffect, useState } from 'react';
 import { Alert, Badge, Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import Programme from '../../entity/Programme';
 import Room from '../../entity/Room';
-import StudentBatch from '../../entity/StudentBatch';
-import {
-  defaultPreferedRoomsState,
-  getPreferedRoomsState,
-  PreferedRoomsType,
-  savePreferedRoomsState,
-} from '../../utils/preferedRoomsDB';
+import Tag from '../../entity/Tag';
 
-export type GroupEditPara = {
-  groupId: string;
-  roomIds: number[];
-};
-
-type GroupRoomDialogProps = {
+type TagRoomDialogProps = {
   closeClickHandler: () => void;
   show: boolean;
   // eslint-disable-next-line react/require-default-props
-  group?: GroupEditPara | null;
+  tag?: Tag | null;
   onSubmit: () => void;
-};
-
-type GroupSelectItemType = {
-  groupId: number;
-  label: string;
 };
 
 type ChipPropType = {
@@ -49,75 +31,42 @@ const Chip = ({ id, removeClickHandler, text }: ChipPropType) => (
   </Button>
 );
 
-export default function StudentBatchRoomsDialog({
+export default function TagRoomDialog({
   closeClickHandler,
   show,
-  group = null,
+  tag = null,
   onSubmit,
-}: GroupRoomDialogProps) {
-  const [batchList, setBatchList] = useState<StudentBatch[]>([]);
-  const [groupList, setgroupList] = useState<GroupSelectItemType[]>([]);
+}: TagRoomDialogProps) {
+  const [tagList, settagList] = useState<Tag[]>([]);
+  const [selectedTag, setSelectedTag] = useState<Tag | null>(tag);
   const [roomList, setroomList] = useState<Room[]>([]);
-  const [selectedroomList, setSelectedroomList] = useState<Room[]>([]);
-  const [selectedGroupId, setselectedGroupId] = useState<string | null>(
-    group ? group.groupId : null
-  );
-  const [currentState, setcurrentState] = useState<PreferedRoomsType>(
-    defaultPreferedRoomsState
+  const [selectedroomList, setSelectedroomList] = useState<Room[]>(
+    tag ? tag.get().Rooms : []
   );
   const [errorMsg, setErrorMsg] = useState('');
 
   const loadData = () => {
     (async () => {
+      const tags = await Tag.findAll();
+      settagList(tags);
+    })();
+    (async () => {
       const rooms = await Room.findAll();
       setroomList(rooms);
-      if (group) {
-        setSelectedroomList([
-          ...rooms.filter((r) => group.roomIds.includes(r.get().id)),
-        ]);
-      }
     })();
   };
-
-  useEffect(() => {}, [roomList]);
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const loadGroups = () => {
-    const groupItems: GroupSelectItemType[] = [];
-    batchList.forEach((b) => {
-      b.get().groups.forEach((g: any) => {
-        groupItems.push({
-          groupId: g.id,
-          label: `Y${b.get().year}.S${b.get().semester}.${
-            b.get().Programme.code
-          }.${g.groupNumber}`,
-        });
-        g.subGroups.forEach((s: any) => {
-          groupItems.push({
-            groupId: s.id,
-            label: `Y${b.get().year}.S${b.get().semester}.${
-              b.get().Programme.code
-            }.${g.groupNumber}.${s.subGroupNumber}`,
-          });
-        });
-      });
-    });
-    setgroupList(groupItems);
+  const handleTagSelected = (tagId: number) => {
+    if (tagId === -1) {
+      setSelectedTag(null);
+      return;
+    }
+    setSelectedTag(tagList.find((x) => x.get().id === tagId) as Tag);
   };
-
-  const loadBatches = () => {
-    (async () => {
-      const batches = await StudentBatch.findAll({ include: Programme });
-      setBatchList(batches);
-    })();
-  };
-
-  useEffect(() => {
-    loadBatches();
-  }, []);
 
   const handleRoomSelected = (roomId: number) => {
     if (roomId === -1) {
@@ -138,29 +87,12 @@ export default function StudentBatchRoomsDialog({
     ]);
   };
 
-  const loadCurrentState = () => {
-    setcurrentState(getPreferedRoomsState());
-  };
-
-  useEffect(() => {
-    loadGroups();
-    loadCurrentState();
-  }, [batchList]);
-
-  const handleSeletedGroup = (groupId: string) => {
-    if (groupId === '-1') {
-      setselectedGroupId(null);
-      return;
-    }
-    setselectedGroupId(groupId);
-  };
-
   const validate = (): boolean => {
     let isValid = true;
     if (selectedroomList.length === 0) {
       isValid = false;
     }
-    if (selectedGroupId === null) {
+    if (selectedTag === null) {
       isValid = false;
     }
     return isValid;
@@ -171,34 +103,19 @@ export default function StudentBatchRoomsDialog({
       setErrorMsg('All fields are required');
       return;
     }
-
-    if (group) {
-      // update
-      currentState.groupRooms = currentState.groupRooms.map((gr) => {
-        if (gr.groupId === group.groupId) {
-          // return the updated one
-          return {
-            groupId: group.groupId,
-            roomId: selectedroomList.map((r) => r.get().id),
-          };
-        }
-        return gr;
-      });
-    } else {
-      // create new
-      currentState.groupRooms.push({
-        groupId: selectedGroupId as string,
-        roomId: selectedroomList.map((s) => s.get().id),
-      });
-    }
-    savePreferedRoomsState(currentState);
-    onSubmit();
+    (async () => {
+      if (tag) {
+        await (selectedTag as any).removeRooms(selectedTag?.get().Rooms);
+      }
+      await (selectedTag as any).addRooms(selectedroomList);
+      onSubmit();
+    })();
   };
 
   return (
     <Modal show={show} size="lg" onHide={() => closeClickHandler()} centered>
       <Modal.Header closeButton>
-        <Modal.Title>{group ? 'Update' : 'Add'} Tag</Modal.Title>
+        <Modal.Title>{tag ? 'Update' : 'Add'} Tag</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -210,35 +127,35 @@ export default function StudentBatchRoomsDialog({
                   className="my-1 mr-1"
                   htmlFor="inlineFormCustomSelectPref"
                 >
-                  Groups/Subgroups
+                  Tag
                 </Form.Label>
                 <Form.Control
-                  disabled={group !== null}
+                  disabled={tag !== null}
                   as="select"
                   className="my-1 mr-sm-2"
                   id="inlineFormCustomSelectPref"
-                  value={selectedGroupId ? selectedGroupId : '-1'}
-                  onChange={(e) => handleSeletedGroup(e.target.value)}
+                  value={selectedTag ? selectedTag.get().id : -1}
+                  onChange={(e) =>
+                    handleTagSelected(parseInt(e.target.value, 10))
+                  }
                 >
-                  <option value={-1}>Select a group or subgroup</option>
-
-                  {groupList.map((g) => (
-                    <option key={g.groupId} value={g.groupId}>
-                      {g.label}
+                  <option value={-1}>Select Tag</option>
+                  {tagList.map((t) => (
+                    <option value={t.get().id} key={t.get().id}>
+                      {t.get().name}
                     </option>
                   ))}
                 </Form.Control>
               </Form>
             </Col>
             <Col>
-              <Form>
+              <Form inline>
                 <Form.Label
                   className="my-1 mr-1"
                   htmlFor="inlineFormCustomSelectPref"
                 >
                   Rooms
                 </Form.Label>
-                <br />
                 <Form.Control
                   as="select"
                   className="my-1 mr-sm-2"
@@ -291,7 +208,7 @@ export default function StudentBatchRoomsDialog({
           Close
         </Button>
         <Button variant="primary" onClick={() => saveBtnClickHandler()}>
-          {group ? 'Save' : 'create'}
+          {tag ? 'Save' : 'create'}
         </Button>
       </Modal.Footer>
     </Modal>
