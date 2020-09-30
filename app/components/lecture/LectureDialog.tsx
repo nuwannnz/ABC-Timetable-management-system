@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable import/no-cycle */
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { useState, useEffect } from 'react';
-import { Modal, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import { Modal, Row, Col, Form, Button, Alert, Badge } from 'react-bootstrap';
 import Lecture from '../../entity/Lecture';
 import Faculty from '../../entity/Faculty';
 import Department from '../../entity/Department';
@@ -11,6 +12,7 @@ import { LectureLevels } from '../../containers/LecturePage';
 import FacultySelect from './FacultySelect';
 import DepartmentSelect from './DepartmentSelect';
 import CenterSelect from './CenterSelect';
+import Room from '../../entity/Room';
 
 type LectureDialogProps = {
   closeClickHandler: () => void;
@@ -19,6 +21,25 @@ type LectureDialogProps = {
   lecture?: Lecture | null;
   onSubmit: (lecture: any) => void;
 };
+
+type ChipPropType = {
+  id: number;
+  text: string;
+  removeClickHandler: (id: number) => void;
+};
+const Chip = ({ id, removeClickHandler, text }: ChipPropType) => (
+  <Button variant="info" size="sm" className="m-2">
+    {text}
+    <Badge
+      variant="light"
+      className="ml-2"
+      onClick={() => removeClickHandler(id)}
+    >
+      X
+    </Badge>
+  </Button>
+);
+
 function LectureDialog({
   show,
   closeClickHandler,
@@ -43,11 +64,39 @@ function LectureDialog({
   const [lName, setLName] = useState(lecture ? (lecture as any).lName : '');
   const [level, setLevel] = useState(lecture ? (lecture as any).level : -1);
 
+  const [roomList, setroomList] = useState<Room[]>([]);
+  const [selectedroomList, setSelectedroomList] = useState<Room[]>(
+    lecture ? lecture.get().Rooms : []
+  );
+
   const [errorMsg, setErrorMsg] = useState('');
   const loadData = () => {
     Building.findAll()
       .then((result) => setBuildingList(result))
       .catch(() => console.log('failed to load buildings'));
+    (async () => {
+      const rooms = await Room.findAll();
+      setroomList(rooms);
+    })();
+  };
+
+  const handleRoomSelected = (roomId: number) => {
+    if (roomId === -1) {
+      return;
+    }
+    setSelectedroomList([
+      ...selectedroomList,
+      roomList.find((r) => r.get().id === roomId) as Room,
+    ]);
+  };
+
+  const handleRoomDeselected = (roomId: number) => {
+    if (roomId === -1) {
+      return;
+    }
+    setSelectedroomList([
+      ...selectedroomList.filter((s) => s.get().id !== roomId),
+    ]);
   };
 
   useEffect(() => {
@@ -84,6 +133,9 @@ function LectureDialog({
     ) {
       isValid = false;
     }
+    if (selectedroomList.length === 0) {
+      isValid = false;
+    }
     return isValid;
   };
 
@@ -104,6 +156,12 @@ function LectureDialog({
       FacultyId: faculty,
       DepartmentId: department,
     };
+    // (async () => {
+    //   if (lecture) {
+    //     await (lecture as any).removeRooms(lecture?.get().Rooms);
+    //   }
+    //   await (lecture as any).addRooms(selectedroomList);
+    // })();
     onSubmit(lec);
   };
 
@@ -201,6 +259,51 @@ function LectureDialog({
               </Form.Group>
             </Col>
             <Col />
+
+            <Col>
+              <Form.Group controlId="building">
+                <Form.Label
+                  className="my-1 mr-1"
+                  htmlFor="inlineFormCustomSelectPref"
+                >
+                  Rooms
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  className="my-1 mr-sm-2"
+                  id="inlineFormCustomSelectPref"
+                  onChange={(e) =>
+                    handleRoomSelected(parseInt(e.target.value, 10))
+                  }
+                >
+                  <option value={-1}>Select Rooms</option>
+                  {roomList
+                    .filter(
+                      (r) =>
+                        !selectedroomList
+                          .map((s) => s.get().id)
+                          .includes(r.get().id)
+                    )
+                    .map((r) => (
+                      <option key={r.get().id} value={r.get().id}>
+                        {r.get().name}({r.get().capacity})
+                      </option>
+                    ))}
+                </Form.Control>
+              </Form.Group>
+              <div className="d-block">
+                <div className="d-flex">
+                  {selectedroomList.map((s) => (
+                    <Chip
+                      id={s.get().id}
+                      key={s.get().id}
+                      text={s.get().name}
+                      removeClickHandler={handleRoomDeselected}
+                    />
+                  ))}
+                </div>
+              </div>
+            </Col>
           </Row>
           <Row>
             <Col>

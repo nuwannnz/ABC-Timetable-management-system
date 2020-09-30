@@ -6,7 +6,7 @@
   "SUBJECT_ROOMS": "/subject/rooms",
   "LOCATION": "/location",
   "WORKING_DAYS": "/workingday",
-  "STUDENT_GROUP_ROOMS": "/student/group/romms",
+  "STUDENT_GROUP_ROOMS": "/student/group/rooms",
   "STUDENT_BATCHES": "/student",
   "STATISTICS": "/statistic",
   "STATISTICS_STUDENT": "/statistic/student",

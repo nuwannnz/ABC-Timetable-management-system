@@ -95,6 +95,7 @@ export default function LecturePage() {
             <th>Department</th>
             <th>Center</th>
             <th>Building</th>
+            <th>Rooms</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -112,6 +113,10 @@ export default function LecturePage() {
               <td>{l.Department.name}</td>
               <td>{l.Center.name}</td>
               <td>{l.Building.name}</td>
+              {/* {l.get().Rooms.map((r: any) => (
+                <td key={r.get().id}>{r.get().name}</td>
+              ))} */}
+
               <td>
                 <div className="d-flex justify-content-center align-items-center">
                   <Button
