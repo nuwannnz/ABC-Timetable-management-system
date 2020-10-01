@@ -15,5 +15,8 @@
   "TAGS": "/tag",
   "TAGS_ROOMS": "/tag/rooms",
   "PROGRAMMES": "/programmes",
-  "SESSIONS": "/session"
+  "SESSIONS": "/session",
+  "CONSECUTIVE_SESSIONS": "/session/consecutive",
+  "PARALLEL_SESSIONS": "/session/parallel",
+  "NOT_AVAILABLE_TIME": "/notime"
 }
