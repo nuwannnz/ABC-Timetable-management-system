@@ -75,8 +75,9 @@ export default function StudentGroupRoomsPage() {
 
     const card: GroupRoomCardType[] = [];
     currentGroups.groupRooms.forEach((gr) => {
+      console.log('gr', gr);
       const batchInfo = getBatchAndGroupOfGroup(groups, gr.groupId);
-
+      console.log('batch', batchInfo);
       card.push({
         groupId: gr.groupId,
         label: `Y${batchInfo.b.get().year}.S${batchInfo.b.get().semester}.${
@@ -102,11 +103,7 @@ export default function StudentGroupRoomsPage() {
   };
 
   useEffect(() => {
-    console.log('loading groups');
-
-    if (currentGroups.groupRooms.length > 0) {
-      loadCards();
-    }
+    loadCards();
   }, [currentGroups]);
 
   useEffect(() => {
@@ -115,10 +112,11 @@ export default function StudentGroupRoomsPage() {
 
   const handleGroupRoomDeleteClick = (groupId: string) => {
     if (confirm('Remove prefered rooms related to this group permanently?')) {
-      currentGroups.groupRooms = currentGroups.groupRooms.filter(
-        (gr) => gr.groupId !== groupId
+      const currentState = Object.create({ ...currentGroups });
+      currentState.groupRooms = currentState.groupRooms.filter(
+        (gr: any) => gr.groupId !== groupId
       );
-      savePreferedRoomsState(currentGroups);
+      savePreferedRoomsState(currentState);
       loadGroups();
     }
   };
@@ -187,6 +185,7 @@ export default function StudentGroupRoomsPage() {
             setGroupToUpdate(null);
           }}
           onSubmit={() => {
+            setGroupToUpdate(null);
             setDisplayDialog(false);
             loadGroups();
           }}
