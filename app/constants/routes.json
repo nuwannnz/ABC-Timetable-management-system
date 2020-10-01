@@ -12,5 +12,9 @@
   "STATISTICS_LECTURE": "/statistic/lecture",
   "TAGS": "/tag",
   "PROGRAMMES": "/programmes",
-  "SESSIONS": "/session"
+  "SESSIONS": "/session",
+  "CONSECUTIVE_SESSIONS": "/session/consecutive",
+  "PARALLEL_SESSIONS": "/session/parallel",
+  "NOT_AVAILABLE_TIME": "/notime"
+
 }

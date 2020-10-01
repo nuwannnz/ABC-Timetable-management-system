@@ -69,5 +69,22 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     index: 12,
     content: 'Sessions',
     link: routes.SESSIONS,
+    childrenMenuItems: [
+      {
+        index: 14,
+        content: 'Consecutive Sessions',
+        link: routes.CONSECUTIVE_SESSIONS,
+      },
+      {
+        index: 15,
+        content: 'Parrerall Sessions',
+        link: routes.PARALLEL_SESSIONS,
+      },
+    ],
+  },
+  {
+    index: 1,
+    content: 'Not Availble Time',
+    link: routes.NOT_AVAILABLE_TIME,
   },
 ];
