@@ -9,6 +9,7 @@
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, Col, Row } from 'react-bootstrap';
 import SessionDialog from '../components/session/SessionDialog';
+import Room from '../entity/Room';
 import Session from '../entity/Session';
 import { formatTime } from '../utils/formatters';
 
@@ -117,6 +118,14 @@ const SessionCard = ({
           <br />
           <span className="mt-2 d-block">{getGroup()}</span>
           {(session as any).studentCount}({(session as any).durationHours})
+          <div>
+            {(session as any).Rooms.map((r: any, i: number) => (
+              <span key={r.get().id}>
+                {r.get().name}
+                {i < (session as any).Rooms.length - 1 ? ',' : ''}
+              </span>
+            ))}
+          </div>
         </Card.Text>
       </Card.Body>
     </Card>
@@ -175,7 +184,10 @@ export default function SessionPage() {
       {displayDialog && (
         <SessionDialog
           session={sessionToUpdate}
-          closeClickHandler={() => setDisplayDialog(false)}
+          closeClickHandler={() => {
+            setDisplayDialog(false);
+            setSessionToUpdate(null);
+          }}
           show={displayDialog}
           onSubmit={() => {
             loadSessions();

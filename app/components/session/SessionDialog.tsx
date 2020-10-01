@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-plusplus */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable promise/always-return */
@@ -8,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Badge, Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import Lecture from '../../entity/Lecture';
 import Programme from '../../entity/Programme';
+import Room from '../../entity/Room';
 import Session from '../../entity/Session';
 import StudentBatch from '../../entity/StudentBatch';
 import Subject from '../../entity/Subject';
@@ -113,12 +115,18 @@ export default function SessionDialog({
     session ? (session as any).studentCount : 0
   );
 
+  const [roomList, setroomList] = useState<Room[]>([]);
+  const [selectedroomList, setSelectedroomList] = useState<Room[]>(
+    session ? session.get().Rooms : []
+  );
+
   const [errorMsg, setErrorMsg] = useState('');
 
   const loadData = async () => {
     setLectureList(await Lecture.findAll());
     setSubjectList(await Subject.findAll());
     setTagList(await Tag.findAll());
+    setroomList(await Room.findAll());
 
     StudentBatch.findAll({ include: [Programme] })
       .then((batches) => {
@@ -126,6 +134,25 @@ export default function SessionDialog({
         return true;
       })
       .catch((e) => console.log('Failed to load student batches'));
+  };
+
+  const handleRoomSelected = (roomId: number) => {
+    if (roomId === -1) {
+      return;
+    }
+    setSelectedroomList([
+      ...selectedroomList,
+      roomList.find((r) => r.get().id === roomId) as Room,
+    ]);
+  };
+
+  const handleRoomDeselected = (roomId: number) => {
+    if (roomId === -1) {
+      return;
+    }
+    setSelectedroomList([
+      ...selectedroomList.filter((s) => s.get().id !== roomId),
+    ]);
   };
 
   useEffect(() => {
@@ -179,14 +206,19 @@ export default function SessionDialog({
         // remove current lectures and tags of the session
         const currentLectures = await updatedSession.getLectures();
         const currentTags = await updatedSession.getTags();
+        const currentRooms = await updatedSession.getRooms();
+
         await updatedSession.removeLectures(currentLectures);
         await updatedSession.removeTags(currentTags);
+        await updatedSession.removeRooms(currentRooms);
 
         // malu session eketh methan remove karala add karanna thiyenne malu selected rooms tika malu
 
         // add the updated lectures and tags for the session
         await updatedSession.addLectures(selectedLectures);
         await updatedSession.addTags(selectedTags);
+        await updatedSession.addRooms(selectedroomList);
+
         onSubmit();
       })();
     } else {
@@ -197,12 +229,9 @@ export default function SessionDialog({
             selectedLectures
           );
           const addedTag = (createdSession as any).addTags(selectedTags);
-          // const addedRooms = (createdSession as any).addRooms(selectedRooms);
-          // methanath ek add karanna thiye malu
+          const addedRooms = (createdSession as any).addRooms(selectedroomList);
 
-          // ita passe me promise.all eke array ekat ara addedRooms ekath danna oni malu api ha yalu mm krannam
-          // ha malu mn kala ennam malu tkgala malu maluth kala ennako malu ayya giyam malu ha yalu, ha malu :) :)
-          return Promise.all([addedLecture, addedTag]).then(() => {
+          return Promise.all([addedLecture, addedTag, addedRooms]).then(() => {
             onSubmit();
           });
         })
@@ -482,7 +511,48 @@ export default function SessionDialog({
               </Form.Group>
             </Col>
             <Col>
-              <></>
+              <Form.Group controlId="building">
+                <Form.Label
+                  className="my-1 mr-1"
+                  htmlFor="inlineFormCustomSelectPref"
+                >
+                  Rooms
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  className="my-1 mr-sm-2"
+                  id="inlineFormCustomSelectPref"
+                  onChange={(e) =>
+                    handleRoomSelected(parseInt(e.target.value, 10))
+                  }
+                >
+                  <option value={-1}>Select Rooms</option>
+                  {roomList
+                    .filter(
+                      (r) =>
+                        !selectedroomList
+                          .map((s) => s.get().id)
+                          .includes(r.get().id)
+                    )
+                    .map((r) => (
+                      <option key={r.get().id} value={r.get().id}>
+                        {r.get().name}({r.get().capacity})
+                      </option>
+                    ))}
+                </Form.Control>
+              </Form.Group>
+              <div className="d-block">
+                <div className="d-flex">
+                  {selectedroomList.map((s) => (
+                    <Chip
+                      id={s.get().id}
+                      key={s.get().id}
+                      text={s.get().name}
+                      removeClickHandler={handleRoomDeselected}
+                    />
+                  ))}
+                </div>
+              </div>
             </Col>
           </Row>
           <Row>
