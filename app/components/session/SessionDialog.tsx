@@ -182,6 +182,8 @@ export default function SessionDialog({
         await updatedSession.removeLectures(currentLectures);
         await updatedSession.removeTags(currentTags);
 
+        // malu session eketh methan remove karala add karanna thiyenne malu selected rooms tika malu
+
         // add the updated lectures and tags for the session
         await updatedSession.addLectures(selectedLectures);
         await updatedSession.addTags(selectedTags);
@@ -195,7 +197,11 @@ export default function SessionDialog({
             selectedLectures
           );
           const addedTag = (createdSession as any).addTags(selectedTags);
+          // const addedRooms = (createdSession as any).addRooms(selectedRooms);
+          // methanath ek add karanna thiye malu
 
+          // ita passe me promise.all eke array ekat ara addedRooms ekath danna oni malu api ha yalu mm krannam
+          // ha malu mn kala ennam malu tkgala malu maluth kala ennako malu ayya giyam malu ha yalu, ha malu :) :)
           return Promise.all([addedLecture, addedTag]).then(() => {
             onSubmit();
           });

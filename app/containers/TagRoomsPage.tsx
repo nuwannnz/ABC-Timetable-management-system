@@ -2,7 +2,6 @@
 /* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react';
 import { Badge, Button, Card, Table } from 'react-bootstrap';
-import TagDialog from '../components/tag/TagDialog';
 import TagRoomDialog from '../components/tag/TagRoomDialog';
 import Room from '../entity/Room';
 import Tag from '../entity/Tag';
@@ -29,6 +28,15 @@ export default function TagRoomsPage() {
   useEffect(() => {
     loadTags();
   }, []);
+
+  const createTagLabel = (tagName: string): string => {
+    if (!tagName) {
+      return '';
+    }
+    const tagLabel = `${tagName.charAt(0).toUpperCase()}${tagName.slice(1)}`;
+    return tagLabel;
+  };
+
   return (
     <div>
       <div className="d-flex align-items-center mb-3">
@@ -43,14 +51,16 @@ export default function TagRoomsPage() {
         </Button>
       </div>
 
-      <div className="d-flex">
+      <div className="d-flex flex-column">
         {tagList
           .filter((t) => t.get().Rooms.length > 0)
           .map((t) => (
-            <Card key={t.get().id} className="mr-3">
+            <Card key={t.get().id} className="mr-3 mb-3">
               <Card.Header>
                 <h3>
-                  <Badge variant="warning">{t.get().name}</Badge>
+                  <Badge variant="warning">
+                    {createTagLabel(t.get().name)}
+                  </Badge>
                 </h3>
               </Card.Header>
               <Card.Body>
@@ -65,7 +75,7 @@ export default function TagRoomsPage() {
                 </div>
               </Card.Body>
               <Card.Footer>
-                <div className="d-flex justify-content-center align-items-center">
+                <div className="d-flex float-right">
                   <Button
                     className="mr-1"
                     variant="secondary"

@@ -27,7 +27,7 @@ export default function LecturePage() {
 
   const loadLectures = () => {
     Lecture.findAll({
-      include: [Faculty, Center, Department, Building],
+      include: { all: true, nested: true },
     })
       .then((result) => {
         setLectureList(result);
@@ -36,27 +36,10 @@ export default function LecturePage() {
       .catch(() => console.log('failed to load lectures'));
   };
 
-  const handleLectureDialogSubmit = (lec: any) => {
-    if (lec.id) {
-      // update
-      Lecture.update({ ...lec }, { where: { id: lec.id } })
-        .then(() => {
-          setDisplayDialog(false);
-          setLecturetoUpdate(null);
-          loadLectures();
-          return true;
-        })
-        .catch((e) => console.error('failed to update lecture'));
-    } else {
-      // create
-      Lecture.create({ ...lec })
-        .then(() => {
-          setDisplayDialog(false);
-          loadLectures();
-          return true;
-        })
-        .catch((e) => console.error('failed to create lecture'));
-    }
+  const handleLectureDialogSubmit = () => {
+    setDisplayDialog(false);
+    setLecturetoUpdate(null);
+    loadLectures();
   };
 
   const deleteLectureHandler = (id: any) => {
@@ -113,9 +96,11 @@ export default function LecturePage() {
               <td>{l.Department.name}</td>
               <td>{l.Center.name}</td>
               <td>{l.Building.name}</td>
-              {/* {l.get().Rooms.map((r: any) => (
-                <td key={r.get().id}>{r.get().name}</td>
-              ))} */}
+              <td>
+                {l.get().Rooms.map((r: any) => (
+                  <div key={r.get().id}>{r.get().name}</div>
+                ))}
+              </td>
 
               <td>
                 <div className="d-flex justify-content-center align-items-center">

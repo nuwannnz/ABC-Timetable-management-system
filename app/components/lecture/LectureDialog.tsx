@@ -1,3 +1,5 @@
+/* eslint-disable promise/no-nesting */
+/* eslint-disable promise/always-return */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable import/no-cycle */
 /* eslint-disable react/jsx-one-expression-per-line */
@@ -19,7 +21,7 @@ type LectureDialogProps = {
   show: boolean;
   // eslint-disable-next-line react/require-default-props
   lecture?: Lecture | null;
-  onSubmit: (lecture: any) => void;
+  onSubmit: () => void;
 };
 
 type ChipPropType = {
@@ -147,7 +149,6 @@ function LectureDialog({
     setErrorMsg('');
 
     const lec = {
-      id: lecture ? (lecture as any).id : null,
       fName,
       lName,
       level,
@@ -156,13 +157,31 @@ function LectureDialog({
       FacultyId: faculty,
       DepartmentId: department,
     };
-    // (async () => {
-    //   if (lecture) {
-    //     await (lecture as any).removeRooms(lecture?.get().Rooms);
-    //   }
-    //   await (lecture as any).addRooms(selectedroomList);
-    // })();
-    onSubmit(lec);
+
+    if (lecture) {
+      // update
+      const lecId = (lecture as any).id;
+      (async () => {
+        await Lecture.update({ ...lec }, { where: { id: lecId } });
+        const updatedLecture = await Lecture.findByPk(lecId, {
+          include: Room,
+        });
+        await (updatedLecture as any).removeRooms(updatedLecture?.get().Rooms);
+        await (updatedLecture as any).addRooms(selectedroomList);
+        onSubmit();
+      })();
+    } else {
+      // create
+
+      Lecture.create({ ...lec })
+        .then((createdLecture) => {
+          const addedRooms = (createdLecture as any).addRooms(selectedroomList);
+          return Promise.all([addedRooms]).then(() => {
+            onSubmit();
+          });
+        })
+        .catch((e) => console.log(e));
+    }
   };
 
   return (
@@ -319,7 +338,12 @@ function LectureDialog({
         <Button variant="secondary" onClick={closeClickHandler}>
           Close
         </Button>
-        <Button variant="primary" onClick={() => saveBtnClickHandler()}>
+        <Button
+          variant="primary"
+          onClick={() => {
+            saveBtnClickHandler();
+          }}
+        >
           {lecture ? 'Save' : 'create'}
         </Button>
       </Modal.Footer>
