@@ -27,10 +27,10 @@ export default function LocationPage() {
   const [buildingToUpdate, setbuildingToUpdate] = useState<Building | null>(
     null
   );
-  const [roomList, setroomList] = useState<Room[]>([]);
 
   const [selectedBuilding, setselectedBuilding] = useState<number | null>(null);
 
+  const [roomList, setroomList] = useState<Room[]>([]);
   const [roomToUpdate, setroomToUpdate] = useState<Room | null>(null);
 
   const loadBuildings = () => {

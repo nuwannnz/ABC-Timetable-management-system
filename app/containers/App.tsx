@@ -56,6 +56,10 @@ export default function App(props: Props) {
     Room.belongsToMany(Lecture, { through: 'lecture_rooms' });
     Lecture.belongsToMany(Room, { through: 'lecture_rooms' });
 
+    // session relationships
+    Room.belongsToMany(Session, { through: 'session_rooms' });
+    Session.belongsToMany(Room, { through: 'session_rooms' });
+
     connectToDb();
     const con = getConnection();
     Tag.findAll();
@@ -71,7 +75,7 @@ export default function App(props: Props) {
       await con.sync({ force: true });
       seedDB();
     };
-    sync();
+    // sync();
   }, []);
   return <div className="app">{children}</div>;
 }
