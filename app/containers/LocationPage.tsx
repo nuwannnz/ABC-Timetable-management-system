@@ -3,6 +3,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
+import { Alert } from 'react-bootstrap';
 import AddBuildingForm from '../components/LocationPage/AddBuildingForm';
 import AddRoomForm from '../components/LocationPage/AddRoomForm';
 import BuildingList from '../components/LocationPage/BuildingList';
@@ -141,6 +142,12 @@ export default function LocationPage() {
             ) : selectedBuilding ? (
               <AddRoomForm />
             ) : null}
+
+            {!selectedBuilding && (
+              <Alert className="align-self-center" variant="info">
+                Select a building to view rooms of it
+              </Alert>
+            )}
           </div>
           <div className="d-flex justify-content-between">
             <BuildingList

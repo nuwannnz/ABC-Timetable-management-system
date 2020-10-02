@@ -18,5 +18,6 @@
   "SESSIONS": "/session",
   "CONSECUTIVE_SESSIONS": "/session/consecutive",
   "PARALLEL_SESSIONS": "/session/parallel",
-  "NOT_AVAILABLE_TIME": "/notime"
+  "NOT_AVAILABLE_TIME": "/notime",
+  "TIMETABLES": "/timetables"
 }

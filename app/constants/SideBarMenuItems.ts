@@ -109,4 +109,9 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     content: 'Not Availble Time',
     link: routes.NOT_AVAILABLE_TIME,
   },
+  {
+    index: 25,
+    content: 'Timetables',
+    link: routes.NOT_AVAILABLE_TIME,
+  },
 ];

@@ -135,9 +135,6 @@ function LectureDialog({
     ) {
       isValid = false;
     }
-    if (selectedroomList.length === 0) {
-      isValid = false;
-    }
     return isValid;
   };
 

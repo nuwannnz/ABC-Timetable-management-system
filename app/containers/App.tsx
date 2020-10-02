@@ -76,8 +76,8 @@ export default function App(props: Props) {
     StudentBatch.findAll();
     Session.findAll();
     const sync = async () => {
-      await con.sync({ force: true });
-      seedDB();
+      await con.sync({});
+      // seedDB();
     };
     sync();
   }, []);
