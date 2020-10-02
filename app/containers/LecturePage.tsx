@@ -27,7 +27,7 @@ export default function LecturePage() {
 
   const loadLectures = () => {
     Lecture.findAll({
-      include: { all: true, nested: true },
+      include: { all: true },
     })
       .then((result) => {
         setLectureList(result);
