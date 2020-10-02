@@ -12,6 +12,7 @@ import StudentBatch from '../entity/StudentBatch';
 import Programme from '../entity/Programme';
 import { seedDB } from '../utils/seed';
 import Session from '../entity/Session';
+import ConsecutiveSession from '../entity/ConsecutiveSession';
 
 type Props = {
   children: ReactNode;
@@ -60,6 +61,9 @@ export default function App(props: Props) {
     Room.belongsToMany(Session, { through: 'session_rooms' });
     Session.belongsToMany(Room, { through: 'session_rooms' });
 
+    ConsecutiveSession.belongsTo(Room);
+    Room.hasMany(ConsecutiveSession);
+
     connectToDb();
     const con = getConnection();
     Tag.findAll();
@@ -75,7 +79,7 @@ export default function App(props: Props) {
       await con.sync({ force: true });
       seedDB();
     };
-    // sync();
+    sync();
   }, []);
   return <div className="app">{children}</div>;
 }

@@ -1,3 +1,11 @@
 {
-  "groupRooms": []
+  "groupRooms": [
+    {
+      "groupId": "be012fc4-1795-43b7-844c-a7f21925be0b",
+      "roomId": [
+        4,
+        7
+      ]
+    }
+  ]
 }

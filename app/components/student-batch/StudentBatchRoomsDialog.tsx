@@ -26,8 +26,8 @@ type GroupRoomDialogProps = {
   onSubmit: () => void;
 };
 
-type GroupSelectItemType = {
-  groupId: number;
+export type GroupSelectItemType = {
+  groupId: string;
   label: string;
 };
 
