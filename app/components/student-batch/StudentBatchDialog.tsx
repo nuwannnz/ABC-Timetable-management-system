@@ -338,7 +338,7 @@ export default function StudentBatchDialog({
               </Form.Group>
             </Col>
             <Col>
-              <Form.Label>Group Number</Form.Label>
+              <Form.Label>Group Number (Enter only numbers)</Form.Label>
               <InputGroup>
                 <Form.Control
                   type="text"
