@@ -50,10 +50,7 @@ export default function ConsecutiveDialog({
   ] = useState<ConsecutiveSessionType | null>(null);
   const [sessionList, setSessionList] = useState<Session[]>([]);
   const [roomList, setroomList] = useState<Room[]>([]);
-  const [selectedRoom, setSelectedRoom] = useState<any>(null);
-  const [selectedRoomId, setSelectedRoomId] = useState<any>(-1);
-
-  const roomSelectRef = useRef(null);
+  const [selectedRoomId, setSelectedRoomId] = useState<number>(-1);
 
   const [conSessions, setConSessions] = useState<ConsecutiveSessionType[]>(
     consectiveSession ? (consectiveSession as any).sessions : []
@@ -98,7 +95,7 @@ export default function ConsecutiveDialog({
     const conSessionDao = {
       id: consectiveSession ? (consectiveSession as any).id : null,
       conSessions,
-      RoomId: (selectedRoom as any).id,
+      RoomId: selectedRoomId,
     };
 
     console.log(conSessionDao);
@@ -130,22 +127,6 @@ export default function ConsecutiveDialog({
       },
     ]);
     setSession('');
-  };
-
-  const handleRoomSelected = (roomId: number) => {
-    console.log('roomId', roomId);
-    if (roomId === -1) {
-      setSelectedRoom(null);
-      setSelectedRoomId(null);
-      return;
-    }
-    const room = roomList.find((r) => r.get().id === roomId) as Room;
-    console.log('room', room);
-    setSelectedRoomId(roomId);
-    setSelectedRoom(room);
-    if (roomSelectRef.current !== null) {
-      (roomSelectRef.current as any).value = roomId;
-    }
   };
 
   return (
@@ -205,20 +186,17 @@ export default function ConsecutiveDialog({
                 <Form.Control
                   as="select"
                   className="my-1 mr-sm-2"
-                  id="inlineFormCustomSelectPref"
+                  defaultValue={selectedRoomId}
                   onChange={(e) =>
-                    handleRoomSelected(parseInt(e.target.value, 10))
+                    setSelectedRoomId(parseInt(e.target.value, 10))
                   }
-                  ref={roomSelectRef}
                 >
                   <option value={-1}>Select a Room</option>
-                  {roomList
-                    .filter((r) => selectedRoom?.get().id !== r.get().id)
-                    .map((r) => (
-                      <option key={r.get().id} value={r.get().id}>
-                        {r.get().name}({r.get().capacity})
-                      </option>
-                    ))}
+                  {roomList.map((r) => (
+                    <option key={r.get().id} value={r.get().id}>
+                      {r.get().name}({r.get().capacity})
+                    </option>
+                  ))}
                 </Form.Control>
               </Form>
             </Col>

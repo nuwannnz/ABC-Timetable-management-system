@@ -11,15 +11,21 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import { Button, Table } from 'react-bootstrap';
-import ConsecutiveDialog, { ConsecutiveSessionType } from '../components/session/ConsecutiveDialog';
+import ConsecutiveDialog, {
+  ConsecutiveSessionType,
+} from '../components/session/ConsecutiveDialog';
 import ConsecutiveSession from '../entity/ConsecutiveSession';
 import Session from '../entity/Session';
 
 export default function ConsecutiveSessions() {
-
   const [displayDialog, setDisplayDialog] = useState(false);
-  const [conSessionToUpdate, setConSessionToUpdate] = useState<ConsecutiveSession | null>(null);
-  const [conSessionList, setConSessionList] = useState<ConsecutiveSession[]>([]);
+  const [
+    conSessionToUpdate,
+    setConSessionToUpdate,
+  ] = useState<ConsecutiveSession | null>(null);
+  const [conSessionList, setConSessionList] = useState<ConsecutiveSession[]>(
+    []
+  );
 
   const loadConSessions = async () => {
     const conSession = await ConsecutiveSession.findAll({
@@ -28,46 +34,52 @@ export default function ConsecutiveSessions() {
     setConSessionList([...conSession]);
   };
 
-  const handleConSessionDialogSubmit = (consectiveSession: ConsecutiveSession) => {
-    if((consectiveSession as any).id ) {
+  const handleConSessionDialogSubmit = (
+    consectiveSession: ConsecutiveSession
+  ) => {
+    if ((consectiveSession as any).id) {
       //update
-      ConsecutiveSession.update({...consectiveSession}, {where: {id: (consectiveSession as any).id}})
-      .then(() => {
-        setDisplayDialog(false);
-        setConSessionToUpdate(null);
-        loadConSessions();
-        return true;
-
-      }).catch((e) => console.log(e));
+      ConsecutiveSession.update(
+        { ...consectiveSession },
+        { where: { id: (consectiveSession as any).id } }
+      )
+        .then(() => {
+          setDisplayDialog(false);
+          setConSessionToUpdate(null);
+          loadConSessions();
+          return true;
+        })
+        .catch((e) => console.log(e));
     } else {
       //create
       console.log(consectiveSession);
       ConsecutiveSession.create({ ...consectiveSession })
-      .then(() => {
-        loadConSessions();
-        setDisplayDialog(false);
-        return true;
-      })
-      .catch((e) => console.log(e));
+        .then(() => {
+          loadConSessions();
+          setDisplayDialog(false);
+          return true;
+        })
+        .catch((e) => console.log(e));
     }
-  }
+  };
 
-  const handleConSessionDeleteClick = (consecutiveSession: ConsecutiveSession) => {
+  const handleConSessionDeleteClick = (
+    consecutiveSession: ConsecutiveSession
+  ) => {
     if (confirm('Delete this Session permanently?')) {
-      ConsecutiveSession.destroy({ where: { id: (consecutiveSession as any).id } })
+      ConsecutiveSession.destroy({
+        where: { id: (consecutiveSession as any).id },
+      })
         .then(() => loadConSessions())
         .catch((e) => console.log(e));
     }
   };
 
-
   useEffect(() => {
     loadConSessions();
   }, []);
   return (
-
     <div>
-
       <div className="d-flex align-items-center mb-3">
         <h2>Consecutive sessions</h2>
         <Button
@@ -76,14 +88,15 @@ export default function ConsecutiveSessions() {
           size="sm"
           variant="primary"
         >
-        Add consecutive sessions
+          Add consecutive sessions
         </Button>
       </div>
-     <Table>
+      <Table>
         <thead>
           <tr>
             <th>Id</th>
             <th>Consecutive Sessions</th>
+            <th>Room</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -91,9 +104,12 @@ export default function ConsecutiveSessions() {
           {conSessionList.map((c: any) => (
             <tr key={c.id}>
               <td>{c.id}</td>
-              <td>{c.conSessions.map((s: any)  => (
-                <td>{s.sessions}</td>
-              ))}</td>
+              <td>
+                {c.conSessions.map((s: any) => (
+                  <span className="mr-3">{s.sessions}</span>
+                ))}
+              </td>
+              <td>{c.Room.get().name}</td>
               <td>
                 <div className="d-flex justify-content-center align-items-center">
                   <Button
@@ -126,7 +142,6 @@ export default function ConsecutiveSessions() {
           show={displayDialog}
           closeClickHandler={() => {
             setDisplayDialog(false);
-
           }}
           onSubmit={handleConSessionDialogSubmit}
           consectiveSession={conSessionToUpdate}

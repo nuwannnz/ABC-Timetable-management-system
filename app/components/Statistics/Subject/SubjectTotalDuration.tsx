@@ -17,6 +17,7 @@ import { stringify } from 'querystring';
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable array-callback-return */
 import React, { useEffect, useRef, useState } from 'react';
+import { Alert } from 'react-bootstrap';
 import { Pie } from 'react-chartjs-2';
 import StudentBatch from '../../../entity/StudentBatch';
 
@@ -179,6 +180,13 @@ export default function SubjectTotalDuration({
   return (
     <div>
       <Pie data={chartData} />
+
+      {filteredStudentBatches.length === 0 && (
+        <Alert variant="warning">
+          The selected year, semester and programme filter combination does not
+          have any information to display statistics
+        </Alert>
+      )}
     </div>
   );
 }

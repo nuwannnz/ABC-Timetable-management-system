@@ -44,16 +44,16 @@ export default function SubjectStatistics() {
           transition={false}
           id="noanim-tab-example"
         >
-          <Tab
+          {/* <Tab
             eventKey="home"
             title="Session Count"
             tabClassName={styles.tabColor}
           >
             <h3 className={styles.center}> Session Count</h3>
             <SessionCount />
-          </Tab>
+          </Tab> */}
           <Tab
-            eventKey="duration"
+            eventKey="home"
             title="Subject Total Duration"
             tabClassName={styles.tabColor}
           >
