@@ -20,7 +20,12 @@ Room.init(
       type: DataTypes.NUMBER,
       allowNull: false,
     },
+    notAvailableTimeSlot: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
   },
+
   {
     sequelize,
     modelName: 'Room',

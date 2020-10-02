@@ -1,15 +1,17 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, Table } from 'react-bootstrap';
+import { Badge, Button, Card, Form, Table } from 'react-bootstrap';
 import {
   GroupType,
   SubGroupType,
 } from '../components/student-batch/StudentBatchDialog';
 import StudentBatchRoomsDialog, {
   GroupEditPara,
+  GroupSelectItemType,
 } from '../components/student-batch/StudentBatchRoomsDialog';
 import Programme from '../entity/Programme';
 import Room from '../entity/Room';
@@ -38,6 +40,9 @@ export default function StudentGroupRoomsPage() {
     defaultPreferedRoomsState
   );
   const [groupCardList, setGroupCardList] = useState<GroupRoomCardType[]>([]);
+  const [groupNames, setGroupNames] = useState<GroupSelectItemType[]>([]);
+  const [filterGroupName, setFilterGroupName] = useState<GroupSelectItemType>();
+  const [batchList, setBatchList] = useState<StudentBatch[]>([]);
 
   const getBatchAndGroupOfGroup = (
     groups: StudentBatch[],
@@ -98,6 +103,43 @@ export default function StudentGroupRoomsPage() {
     setGroupCardList([...card]);
   };
 
+  const loadBatches = () => {
+    (async () => {
+      const batches = await StudentBatch.findAll({ include: Programme });
+      setBatchList(batches);
+    })();
+  };
+  useEffect(() => {
+    loadBatches();
+  }, []);
+
+  const loadGroupNames = () => {
+    const groupItems: GroupSelectItemType[] = [];
+    batchList.forEach((b) => {
+      b.get().groups.forEach((g: any) => {
+        groupItems.push({
+          groupId: g.id,
+          label: `Y${b.get().year}.S${b.get().semester}.${
+            b.get().Programme.code
+          }.${g.groupNumber}`,
+        });
+        g.subGroups.forEach((s: any) => {
+          groupItems.push({
+            groupId: s.id,
+            label: `Y${b.get().year}.S${b.get().semester}.${
+              b.get().Programme.code
+            }.${g.groupNumber}.${s.subGroupNumber}`,
+          });
+        });
+      });
+    });
+    setGroupNames(groupItems);
+  };
+
+  useEffect(() => {
+    loadGroupNames();
+  }, [batchList]);
+
   const loadGroups = () => {
     setcurrentGroups({ ...getPreferedRoomsState() });
   };
@@ -138,44 +180,84 @@ export default function StudentGroupRoomsPage() {
         </Button>
       </div>
 
-      {groupCardList.map((c) => (
-        <Card key={c.groupId} className="mb-3">
-          <Card.Header>{c.label}</Card.Header>
-          <Card.Body>
-            <div className="d-flex mt-2">
-              {c.rooms.map((r: any, i) => (
-                <h6 key={i}>
-                  <Badge className="mr-2" variant="info">
-                    {r}
-                  </Badge>
-                </h6>
-              ))}
-            </div>
-          </Card.Body>
-          <Card.Footer>
-            <div className="d-flex float-right">
-              <Button
-                className="mr-1"
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  setGroupToUpdate({ groupId: c.groupId, roomIds: c.roomIds });
-                  setDisplayDialog(true);
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={() => handleGroupRoomDeleteClick(c.groupId)}
-              >
-                Delete
-              </Button>
-            </div>
-          </Card.Footer>
-        </Card>
-      ))}
+      <div className="mb-3">
+        <Form inline>
+          <Form.Label
+            className="my-1 mr-1"
+            htmlFor="inlineFormCustomSelectPref"
+          >
+            Groups/Subgroups
+          </Form.Label>
+          <Form.Control
+            as="select"
+            className="my-1 mr-sm-2"
+            id="inlineFormCustomSelectPref"
+            value={filterGroupName ? filterGroupName.groupId : '-1'}
+            onChange={(e) =>
+              setFilterGroupName(
+                groupNames.find((g) => g.groupId === e.target.value)
+              )
+            }
+          >
+            <option value={-1}>Select a group or subgroup</option>
+
+            {groupNames.map((g) => (
+              <option key={g.groupId} value={g.groupId}>
+                {g.label}
+              </option>
+            ))}
+          </Form.Control>
+        </Form>
+      </div>
+
+      {groupCardList
+        .filter((g) => {
+          if (filterGroupName) {
+            return g.groupId === filterGroupName?.groupId;
+          }
+          return true;
+        })
+        .map((c) => (
+          <Card key={c.groupId} className="mb-3">
+            <Card.Header>{c.label}</Card.Header>
+            <Card.Body>
+              <div className="d-flex mt-2">
+                {c.rooms.map((r: any, i) => (
+                  <h6 key={i}>
+                    <Badge className="mr-2" variant="info">
+                      {r}
+                    </Badge>
+                  </h6>
+                ))}
+              </div>
+            </Card.Body>
+            <Card.Footer>
+              <div className="d-flex float-right">
+                <Button
+                  className="mr-1"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setGroupToUpdate({
+                      groupId: c.groupId,
+                      roomIds: c.roomIds,
+                    });
+                    setDisplayDialog(true);
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleGroupRoomDeleteClick(c.groupId)}
+                >
+                  Delete
+                </Button>
+              </div>
+            </Card.Footer>
+          </Card>
+        ))}
 
       {displayDialog && (
         <StudentBatchRoomsDialog
