@@ -7,11 +7,23 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, Card, Col, Row } from 'react-bootstrap';
+import {
+  Badge,
+  Button,
+  ButtonGroup,
+  Card,
+  Col,
+  Form,
+  Row,
+  ToggleButton,
+} from 'react-bootstrap';
 import SessionDialog from '../components/session/SessionDialog';
 import Room from '../entity/Room';
+import Lecture from '../entity/Lecture';
 import Session from '../entity/Session';
 import { formatTime } from '../utils/formatters';
+import Subject from '../entity/Subject';
+import Tag from '../entity/Tag';
 
 type SessionCardPropType = {
   session: Session;
@@ -136,6 +148,15 @@ export default function SessionPage() {
   const [displayDialog, setDisplayDialog] = useState(false);
   const [sessionToUpdate, setSessionToUpdate] = useState<Session | null>(null);
   const [sessionList, setSessionList] = useState<Session[]>([]);
+  const [displayFilters, setDisplayFilters] = useState(false);
+
+  const [lectureList, setLectureList] = useState<Lecture[]>([]);
+  const [subjectList, setSubjectList] = useState<Subject[]>([]);
+  const [tagList, setTagList] = useState<Tag[]>([]);
+
+  const [filterLectureId, setFilterLectureId] = useState<number>(-1);
+  const [filterSubjectId, setFilterSubjectId] = useState<number>(-1);
+  const [filterTagId, setFilterTagId] = useState<number>(-1);
 
   const loadSessions = async () => {
     const s = await Session.findAll({
@@ -148,6 +169,14 @@ export default function SessionPage() {
     loadSessions();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      setLectureList(await Lecture.findAll());
+      setSubjectList(await Subject.findAll());
+      setTagList(await Tag.findAll());
+    })();
+  }, []);
+
   const handleSessionDelete = (session: any) => {
     if (confirm('Delete this session permanently?')) {
       Session.destroy({ where: { id: session.id } }).then(() => loadSessions());
@@ -157,30 +186,146 @@ export default function SessionPage() {
   return (
     <div>
       <div className="d-flex align-items-center mb-3">
-        <h2>Sessions</h2>
-        <Button
-          onClick={() => setDisplayDialog(!displayDialog)}
-          className="ml-3"
-          size="sm"
-          variant="primary"
-        >
-          Add new session
-        </Button>
-      </div>
+        <div className="w-100 d-flex justify-content-between align-items-center">
+          <div className="d-flex">
+            <h2>Sessions</h2>
 
-      {sessionList.map((s: any) => (
-        <SessionCard
-          key={s.id}
-          session={s}
-          onDeleteClick={(ses: any) => {
-            handleSessionDelete(ses);
-          }}
-          onEditClick={(ses: any) => {
-            setSessionToUpdate(ses);
-            setDisplayDialog(true);
-          }}
-        />
-      ))}
+            <Button
+              onClick={() => setDisplayDialog(!displayDialog)}
+              className="ml-3"
+              size="sm"
+              variant="primary"
+            >
+              Add new session
+            </Button>
+          </div>
+          <ButtonGroup toggle>
+            <ToggleButton
+              type="checkbox"
+              size="sm"
+              variant="outline-secondary"
+              checked={displayFilters}
+              value="1"
+              onChange={(e) => setDisplayFilters(e.currentTarget.checked)}
+            >
+              <i className="fas fa-filter">
+                <></>
+              </i>
+              <span className="ml-2">Filter sessions</span>
+            </ToggleButton>
+          </ButtonGroup>
+        </div>
+      </div>
+      {displayFilters && (
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex">
+            <Form.Group>
+              <Form.Label>Lectures</Form.Label>
+              <Form.Control
+                as="select"
+                value={filterLectureId}
+                onChange={(e) => {
+                  setFilterLectureId(parseInt(e.target.value, 10));
+                }}
+              >
+                <option value={-1}>Select a lecture</option>
+                {lectureList.map((l) => (
+                  <option key={l.get().id} value={l.get().id}>
+                    {l.get().fName} {l.get().lName}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group className="ml-4">
+              <Form.Label>Subjects</Form.Label>
+              <Form.Control
+                as="select"
+                value={filterSubjectId}
+                onChange={(e) => {
+                  setFilterSubjectId(parseInt(e.target.value, 10));
+                }}
+              >
+                <option value={-1}>Select a subject</option>
+                {subjectList.map((s) => (
+                  <option key={s.get().id} value={s.get().id}>
+                    {s.get().name}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group className="ml-4">
+              <Form.Label>Tags</Form.Label>
+              <Form.Control
+                as="select"
+                value={filterTagId}
+                onChange={(e) => {
+                  setFilterTagId(parseInt(e.target.value, 10));
+                }}
+              >
+                <option value={-1}>Select a tag</option>
+                {tagList.map((t) => (
+                  <option key={t.get().id} value={t.get().id}>
+                    {t.get().name}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+          </div>
+
+          <Button
+            variant="light"
+            size="sm"
+            onClick={() => {
+              setFilterLectureId(-1);
+              setFilterTagId(-1);
+              setFilterSubjectId(-1);
+            }}
+          >
+            Reset filters
+          </Button>
+        </div>
+      )}
+
+      {sessionList
+        .filter((s) => {
+          if (filterLectureId !== -1) {
+            return s
+              .get()
+              .Lectures.map((l: any) => l.get().id)
+              .includes(filterLectureId);
+          }
+          return true;
+        })
+        .filter((s) => {
+          if (filterTagId !== -1) {
+            return s
+              .get()
+              .Tags.map((t: any) => t.get().id)
+              .includes(filterTagId);
+          }
+          return true;
+        })
+        .filter((s) => {
+          if (filterSubjectId !== -1) {
+            return s.get().Subject.get().id === filterSubjectId;
+          }
+          return true;
+        })
+        .map((s: any) => (
+          <SessionCard
+            key={s.id}
+            session={s}
+            onDeleteClick={(ses: any) => {
+              handleSessionDelete(ses);
+            }}
+            onEditClick={(ses: any) => {
+              setSessionToUpdate(ses);
+              setDisplayDialog(true);
+            }}
+          />
+        ))}
       {displayDialog && (
         <SessionDialog
           session={sessionToUpdate}

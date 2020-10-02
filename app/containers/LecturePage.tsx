@@ -27,13 +27,13 @@ export default function LecturePage() {
 
   const loadLectures = () => {
     Lecture.findAll({
-      include: { all: true, nested: true },
+      include: { all: true },
     })
       .then((result) => {
         setLectureList(result);
         return true;
       })
-      .catch(() => console.log('failed to load lectures'));
+      .catch((e) => console.log('failed to load lectures', e));
   };
 
   const handleLectureDialogSubmit = () => {
