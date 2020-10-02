@@ -5,6 +5,7 @@ export type SideBarMenuItem = {
   content: string;
   link: string;
   childrenMenuItems?: SideBarMenuItem[];
+  rootLevelContent?: string;
 };
 
 export const SideBarMenuItemList: SideBarMenuItem[] = [
@@ -17,6 +18,7 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     index: 2,
     content: 'Subjects',
     link: routes.SUBJECT,
+    rootLevelContent: 'Subject section',
     childrenMenuItems: [
       {
         index: 22,
@@ -39,6 +41,7 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     index: 5,
     content: 'Students',
     link: routes.STUDENT_BATCHES,
+    rootLevelContent: 'Student section',
     childrenMenuItems: [
       {
         index: 21,
@@ -49,14 +52,10 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
   },
   {
     index: 6,
-    content: 'Statistics',
-    link: routes.STATISTICS,
+    content: 'Lecture statistics',
+    link: routes.STATISTICS_LECTURE,
+    rootLevelContent: 'Statistics section',
     childrenMenuItems: [
-      {
-        index: 7,
-        content: 'Lecture statistics',
-        link: routes.STATISTICS_LECTURE,
-      },
       {
         index: 8,
         content: 'Subject statistics',
@@ -73,6 +72,7 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     index: 10,
     content: 'Tags',
     link: routes.TAGS,
+    rootLevelContent: 'Tag section',
     childrenMenuItems: [
       {
         index: 20,
@@ -89,6 +89,7 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
   {
     index: 12,
     content: 'Sessions',
+    rootLevelContent: 'Session section',
     link: routes.SESSIONS,
     childrenMenuItems: [
       {

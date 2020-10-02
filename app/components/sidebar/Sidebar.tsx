@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-nested-ternary */
@@ -45,9 +46,13 @@ const SideBarMenuItemElement = ({
     if (active) {
       return;
     }
-    (linkRef as any).current.click();
+
+    if (!menuItem.childrenMenuItems) {
+      (linkRef as any).current.click();
+    }
     setActive(true);
     onSelect(menuItem.index);
+    setSelectedChildIndex(menuItem.index);
   };
 
   return (
@@ -61,7 +66,7 @@ const SideBarMenuItemElement = ({
       }`}
       onClick={handleLinkClick}
     >
-      <Link ref={linkRef} to={menuItem.link}>
+      <Link ref={linkRef} to={menuItem.childrenMenuItems ? '#' : menuItem.link}>
         <div
           className={styles.sideBarMenuItem}
           onClick={() => handleLinkClick()}
@@ -69,22 +74,44 @@ const SideBarMenuItemElement = ({
           role="link"
           tabIndex={menuItem.index}
         >
-          <span>{menuItem.content}</span>
+          <div className="d-flex w-100 justify-content-between align-items-center">
+            <span>
+              {menuItem.rootLevelContent
+                ? menuItem.rootLevelContent
+                : menuItem.content}
+            </span>
+            {menuItem.childrenMenuItems && (
+              <i className="fas fa-chevron-down">
+                <></>
+              </i>
+            )}
+          </div>
         </div>
       </Link>
       {menuItem.childrenMenuItems && active && (
         <div className={styles.sideBarMenuItemChildWrapper}>
-          {menuItem.childrenMenuItems.map((m) => (
-            <SideBarMenuItemElement
-              key={m.index}
-              menuItem={m}
-              isChildItem
-              selectedIndex={selectedChildIndex}
-              onSelect={(i) => {
-                setSelectedChildIndex(i);
-              }}
-            />
-          ))}
+          {menuItem.childrenMenuItems
+            .concat(
+              ...[
+                {
+                  ...menuItem,
+                  childrenMenuItems: undefined,
+                  rootLevelContent: undefined,
+                },
+              ]
+            )
+            .reverse()
+            .map((m) => (
+              <SideBarMenuItemElement
+                key={m.index}
+                menuItem={m}
+                isChildItem
+                selectedIndex={selectedChildIndex}
+                onSelect={(i) => {
+                  setSelectedChildIndex(i);
+                }}
+              />
+            ))}
         </div>
       )}
     </div>
