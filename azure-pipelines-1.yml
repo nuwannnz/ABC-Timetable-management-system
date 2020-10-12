@@ -3,7 +3,7 @@
   inputs:
     SonarQube: 'TimeTableManage'
     scannerMode: 'MSBuild'
-    projectKey: 'two'
+    projectKey: '6033fb5331084abf1e72944f9cbfc2d9627e7fb9'
     projectName: 'TimeTable'
 # Build a Node.js project that uses React.
 # Add steps that analyze code, save build artifacts, deploy, and more:
