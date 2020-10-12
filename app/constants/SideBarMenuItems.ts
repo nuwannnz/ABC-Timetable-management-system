@@ -70,4 +70,9 @@ export const SideBarMenuItemList: SideBarMenuItem[] = [
     content: 'Sessions',
     link: routes.SESSIONS,
   },
+  {
+    index: 13,
+    content: 'Timetable',
+    link: routes.TIMETABLE,
+  }
 ];

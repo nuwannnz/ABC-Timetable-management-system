@@ -47,7 +47,7 @@ export default function TimeSlotDialog({
       },
       endTime: {
         hour: is30Minutes ? hour : hour + 1,
-        minute: is30Minutes ? minute + 30 : minute,
+        minute: is30Minutes ? minute + 30 : hour + 1,
       },
       AM: isAM,
     };

@@ -10,7 +10,7 @@
     "sunday": false
   },
   "workingTimePerDay": {
-    "hours": 3,
+    "hours": 6,
     "minutes": 7
   },
   "timeSlots": [
