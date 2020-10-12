@@ -1,5 +1,6 @@
 # Node.js with React
 - task: SonarQubePrepare@4
+- task: SonarQubeAnalyze@4
   inputs:
     SonarQube: 'TimeTableManage'
     scannerMode: 'MSBuild'
