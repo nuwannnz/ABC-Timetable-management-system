@@ -117,7 +117,7 @@ export default function SubjectTotalDuration({
       b.get().Sessions.forEach((s: any) => {
         if (totalDuration.current.has(s.get().Subject?.get().name)) {
           const total =
-            totalDuration.current.get(s.get().Subject?.get().name) +
+            totalDuration.current.get(s.get().Subject?.get().name) * 60 +
             (s.durationHours * 60 + s.durationMinutes);
 
           totalDuration.current.set(
